@@ -2,11 +2,11 @@ const Sequelize = require('sequelize');
 require('dotenv').config()
 
 const sequelize = new Sequelize(
-    process.env.DB_NAME,
-    process.env.DB_USER,
-    process.env.DB_PW, {
+    "shopping",
+    "tuguri8",
+    "gachon654321", {
         logging: console.log,
-        host: process.env.DB_HOST,
+        host: "shoppingdb.cvqgwblelwrn.ap-northeast-2.rds.amazonaws.com",
         dialect: 'mysql',
         timezone: '+09:00',
         define: {
