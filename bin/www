@@ -88,5 +88,6 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
+  console.log('Server Listening at 7001');
   syncDatabase().then(() => {console.log('Database Sync Complete')});
 }
