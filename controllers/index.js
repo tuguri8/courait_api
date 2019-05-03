@@ -1,5 +1,6 @@
 require('dotenv').config()
 const models = require('../models');
+const moment = require('moment');
 
 
 function login (req, res) {
@@ -60,11 +61,12 @@ function verifyToken (req, res) {
 }
 
 function getByMonth (req,res) {
+  const nowMonth = moment().format("MM");
   const email = req.body.email;
   models.User.findOne({
     include: [{
       model: models.Purchase_list,
-      where: (models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), 5),
+      where: (models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), nowMonth),
       required: false
     }],
   }).then(list => {
@@ -85,8 +87,33 @@ function getByMonth (req,res) {
   });
 }
 
+function getByDay (req,res) {
+  const nowMonth = moment().format("MM");
+  const nowDay = moment().format("DD");
+  const email = req.body.email;
+  models.User.findOne({
+    include: [{
+      model: models.Purchase_list,
+      where: [(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), nowMonth),(models.sequelize.fn('DAY', models.sequelize.col('purchase_date')), nowDay)],
+      required: false
+    }],
+  }).then(list => {
+    console.log(list);
+    list = list.purchase_lists;
+    if (list){
+      return res.status(200).json({success: true, list: list});
+    } else {
+      return res.status(403).json({success: false});
+    }
+  }).catch(function (err){
+    console.log(err);
+    return res.status(500).json({success: false});
+  });
+}
+
 module.exports = {
     login: login,
     verifyToken: verifyToken,
-    getByMonth: getByMonth
+    getByMonth: getByMonth,
+    getByDay: getByDay,
 }
