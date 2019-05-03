@@ -65,7 +65,7 @@ function getByMonth (req,res) {
     include: [{
       model: models.Purchase_list,
       as: 'lists',
-      where: {[models.sequelize.fn('MONTH', models.sequelize.col('pruchase_date')), 5]},
+      where: (models.sequelize.fn('MONTH', models.sequelize.col('pruchase_date')), 5}),
       required: false
     }],
   }).then(list => {
