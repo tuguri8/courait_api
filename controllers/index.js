@@ -92,12 +92,11 @@ function getByDay (req,res) {
   // const nowMonth = moment().format("MM");
   // const nowDay = moment().format("DD");
   const email = req.body.email;
-  const month = req.body.month;
-  // const day = req.body.day;
+  const day = req.body.day;
   models.User.findOne({
     include: [{
       model: models.Purchase_list,
-      where: {$and: [(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month),(models.sequelize.fn('DAY', models.sequelize.col('purchase_date')), 3)]},
+      where: (models.sequelize.fn('DAY', models.sequelize.col('purchase_date')), day),
       required: false
     }],
   }).then(list => {
