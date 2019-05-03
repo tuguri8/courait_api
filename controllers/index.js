@@ -63,10 +63,11 @@ function verifyToken (req, res) {
 function getByMonth (req,res) {
   // const nowMonth = moment().format("MM");
   const email = req.body.email;
+  const month = req.body.month;
   models.User.findOne({
     include: [{
       model: models.Purchase_list,
-      where: (models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), 5),
+      where: (models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month),
       required: false
     }],
   }).then(list => {
@@ -88,13 +89,15 @@ function getByMonth (req,res) {
 }
 
 function getByDay (req,res) {
-  const nowMonth = moment().format("MM");
-  const nowDay = moment().format("DD");
+  // const nowMonth = moment().format("MM");
+  // const nowDay = moment().format("DD");
   const email = req.body.email;
+  const month = req.body.month;
+  const day = req.body.day;
   models.User.findOne({
     include: [{
       model: models.Purchase_list,
-      where: [(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), 05),(models.sequelize.fn('DAY', models.sequelize.col('purchase_date')), 03)],
+      where: [(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month),(models.sequelize.fn('DAY', models.sequelize.col('purchase_date')), day)],
       required: false
     }],
   }).then(list => {
