@@ -61,7 +61,7 @@ function verifyToken (req, res) {
 
 function getByMonth (req,res) {
   const email = req.body.email;
-  models.User.findAll({
+  models.User.findOne({
     include: [{
       model: models.Purchase_list,
       where: (models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), 5),
