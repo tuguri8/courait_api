@@ -69,7 +69,7 @@ function getByMonth (req,res) {
     }],
   }).then(list => {
     console.log(list);
-    list = list.purchase_list;
+    list = list.purchase_lists;
     let totalPrice = 0;
     list.forEach((data) => {
       totalPrice += data.price;
