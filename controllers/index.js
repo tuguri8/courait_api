@@ -64,7 +64,6 @@ function getByMonth (req,res) {
   models.User.findAll({
     include: [{
       model: models.Purchase_list,
-      as: 'lists',
       where: (models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), 5),
       required: false
     }],
