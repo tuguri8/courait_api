@@ -1,5 +1,5 @@
 require('dotenv').config()
-const models = require('../../models');
+const models = require('../models');
 
 
 function login (req, res) {
