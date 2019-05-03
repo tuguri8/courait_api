@@ -48,13 +48,13 @@ const User = sequelize.define('user', {
 
 const Purchase_list = sequelize.define('purchase_list', {
   id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
-  user_email: { type: Sequelize.STRING, allowNull: false, references: {model: User, key: 'email'}},
+  email: { type: Sequelize.STRING, allowNull: false, references: {model: User, key: 'email'}},
   item_name: Sequelize.STRING,
   price: Sequelize.INTEGER,
-  pruchase_date: Sequelize.DATE,
+  purchase_date: Sequelize.DATE,
 });
 
-// User.hasMany(Purchase_list, {foreignKey: 'email'});
+User.hasMany(Purchase_list, {foreignKey: 'email'});
 
 
 module.exports = {
