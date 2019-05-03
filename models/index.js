@@ -43,6 +43,7 @@ const User = sequelize.define('user', {
   name: Sequelize.STRING,
   naver_id: Sequelize.STRING,
   naver_pw: Sequelize.STRING,
+  budget: Sequelize.INTEGER,
 });
 
 const Purchase_list = sequelize.define('purchase_list', {
