@@ -38,13 +38,23 @@ const sequelize = new Sequelize(
 
 
 const User = sequelize.define('user', {
-  email: { type: Sequelize.STRING, allowNull: false, unique: true },
+  email: { type: Sequelize.STRING, primaryKey: true},
   password: Sequelize.STRING,
+  name: Sequelize.STRING,
   naver_id: Sequelize.STRING,
   naver_pw: Sequelize.STRING,
+});
+
+const Purchase_list = sequelize.define('purchase_list', {
+  id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
+  user_email: { type: Sequelize.STRING, allowNull: false, references: {model: User, key: 'email'}},
+  item_name: Sequelize.STRING,
+  price: Sequelize.INTEGER,
+  pruchase_date: Sequelize.DATE,
 });
 
 module.exports = {
     sequelize: sequelize,
     User: User,
+    Purchase_list: Purchase_list,
 };
