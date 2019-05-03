@@ -68,13 +68,17 @@ function getByMonth (req,res) {
       required: false
     }],
   }).then(list => {
-      console.log(list);
-      if (list){
-          return res.status(200).json({result: list});
-      } else {
-          // Return when no data found
-          return res.status(403).json({success: false});
-      }
+    console.log(list);
+    list = list.purchase_list;
+    let totalPrice = 0;
+    list.forEach((data) => {
+      totalPrice += data.price;
+    });
+    if (list){
+      return res.status(200).json({price: totalPrice, list: list});
+    } else {
+      return res.status(403).json({success: false});
+    }
   }).catch(function (err){
     console.log(err);
     return res.status(500).json({success: false});
