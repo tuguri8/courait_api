@@ -61,12 +61,12 @@ function verifyToken (req, res) {
 }
 
 function getByMonth (req,res) {
-  const nowMonth = moment().format("MM");
+  // const nowMonth = moment().format("MM");
   const email = req.body.email;
   models.User.findOne({
     include: [{
       model: models.Purchase_list,
-      where: [(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), 05)],
+      where: (models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), 5),
       required: false
     }],
   }).then(list => {
