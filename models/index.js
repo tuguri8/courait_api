@@ -54,7 +54,7 @@ const Purchase_list = sequelize.define('purchase_list', {
   pruchase_date: Sequelize.DATE,
 });
 
-User.hasMany(Purchase_list, {foreignKey: 'email'});
+// User.hasMany(Purchase_list, {foreignKey: 'email'});
 
 
 module.exports = {
