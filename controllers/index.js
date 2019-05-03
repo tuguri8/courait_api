@@ -77,6 +77,7 @@ function getByMonth (req,res) {
           return res.status(403).json({success: false});
       }
   }).catch(function (err){
+    console.log(err);
     return res.status(500).json({success: false});
   });
 }
