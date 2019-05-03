@@ -101,7 +101,7 @@ function getByDay (req,res) {
         (models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month),
         (models.sequelize.fn('DAY', models.sequelize.col('purchase_date')), day)
       ),
-      required: false
+      required: true
     }],
   }).then(list => {
     console.log(list);
