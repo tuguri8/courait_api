@@ -57,10 +57,32 @@ function verifyToken (req, res) {
       message: "token error"
     });
   }
+}
 
+function getByMonth (req,res) {
+  const email = req.body.email;
+  models.User.findAll({
+    include: [{
+      model: models.Purchase_list,
+      as: 'lists',
+      where: { models.sequelize.fn('MONTH', models.sequelize.col('pruchase_date')), 5},
+      required: false
+    }],
+  }).then(list => {
+      console.log(list);
+      if (list){
+          return res.status(200).json({result: list});
+      } else {
+          // Return when no data found
+          return res.status(403).json({success: false});
+      }
+  }).catch(function (err){
+    return res.status(500).json({success: false});
+  });
 }
 
 module.exports = {
     login: login,
-    verifyToken: verifyToken
+    verifyToken: verifyToken,
+    getByMonth: getByMonth
 }
