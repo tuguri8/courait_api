@@ -68,7 +68,7 @@ function getByMonth (req,res) {
     include: [{
       model: models.Purchase_list,
       where: models.sequelize.where(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month),
-      required: false
+      required: true
     }],
   }).then(list => {
     console.log(list);
@@ -80,7 +80,7 @@ function getByMonth (req,res) {
     if (list){
       return res.status(200).json({price: totalPrice, list: list});
     } else {
-      return res.status(403).json({success: false});
+      return res.status(403).json({success: false, message: "결과없음"});
     }
   }).catch(function (err){
     console.log(err);
@@ -105,7 +105,7 @@ function getByDay (req,res) {
     if (list){
       return res.status(200).json({success: true, list: list});
     } else {
-      return res.status(403).json({success: false});
+      return res.status(403).json({success: false, message: "결과없음"});
     }
   }).catch(function (err){
     console.log(err);
