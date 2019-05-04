@@ -86,42 +86,21 @@ async function getByMonth (req,res) {
     console.log(e);
     return res.status(500).json({success: false});
   }
-  // models.User.findOne({
-  //   include: [{
-  //     model: models.Purchase_list,
-  //     where: models.sequelize.where(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month),
-  //     required: true
-  //   }],
-  // }).then(list => {
-  //   if (list){
-  //     console.log(list);
-  //     list = list.purchase_lists;
-  //     let totalPrice = 0;
-  //     list.forEach((data) => {
-  //       totalPrice += data.price;
-  //     });
-  //     return res.status(200).json({price: totalPrice, list: list});
-  //   } else {
-  //     return res.status(403).json({success: false, message: "결과없음"});
-  //   }
-  // }).catch(function (err){
-  //   console.log(err);
-  //   return res.status(500).json({success: false});
-  // });
 }
 
-function getByDay (req,res) {
+async function getByDay (req,res) {
   const email = req.body.email;
   const month = req.body.month;
   const day = req.body.day;
-  models.User.findOne({
-    include: [{
-      model: models.Purchase_list,
-      where: models.sequelize.and((models.sequelize.where(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month)),
-      (models.sequelize.where(models.sequelize.fn('DAY', models.sequelize.col('purchase_date')), day))),
-      required: true
-    }],
-  }).then(list => {
+  try {
+    let list = models.User.findOne({
+      include: [{
+        model: models.Purchase_list,
+        where: models.sequelize.and((models.sequelize.where(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month)),
+        (models.sequelize.where(models.sequelize.fn('DAY', models.sequelize.col('purchase_date')), day))),
+        required: true
+      }],
+    });
     if (list){
       console.log(list);
       list = list.purchase_lists;
@@ -129,37 +108,51 @@ function getByDay (req,res) {
     } else {
       return res.status(403).json({success: false, message: "결과없음"});
     }
-  }).catch(function (err){
-    console.log(err);
+  } catch (e) {
+    console.log(e);
     return res.status(500).json({success: false});
-  });
+  }
 }
 
-function comparePrevMonth (req,res) {
+async function comparePrevMonth (req,res) {
   const email = req.body.email;
   const month = req.body.month;
-  models.User.findOne({
-    include: [{
-      model: models.Purchase_list,
-      where: models.sequelize.where(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month),
-      required: true
-    }],
-  }).then(list => {
-    if (list){
-      console.log(list);
-      list = list.purchase_lists;
-      let totalPrice = 0;
-      list.forEach((data) => {
-        totalPrice += data.price;
+  try {
+    let prevTotalPrice = 0;
+    let nowTotalPrice = 0;
+    let diffPrice;
+    let now_list = models.User.findOne({
+      include: [{
+        model: models.Purchase_list,
+        where: models.sequelize.where(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month),
+        required: true
+      }],
+    });
+    let prev_list = models.User.findOne({
+      include: [{
+        model: models.Purchase_list,
+        where: models.sequelize.where(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), moment(month,'M').subtract(1, 'months').format('M')),
+        required: true
+      }],
+    });
+    if (prev_list) {
+      prev_list = prev_list.purchase_lists;
+      prev_list.forEach((data) => {
+        prevTotalPrice += data.price;
       });
-      return res.status(200).json({price: totalPrice, list: list});
-    } else {
-      return res.status(403).json({success: false, message: "결과없음"});
     }
-  }).catch(function (err){
-    console.log(err);
+    if (now_list) {
+      now_list = now_list.purchase_lists;
+      now_list.forEach((data) => {
+         nowTotalPrice += data.price;
+      });
+    }
+    diffPrice = nowTotalPrice - prevTotalPrice;
+    return res.status(200).json({success: true, prevMonth: prevTotalPrice, nowMonth: nowTotalPrice, price: diffPrice});
+  } catch (e) {
+    console.log(e);
     return res.status(500).json({success: false});
-  });
+  }
 }
 
 module.exports = {
