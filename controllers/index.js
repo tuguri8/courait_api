@@ -67,7 +67,6 @@ function getByMonth (req,res) {
   models.User.findOne({
     include: [{
       model: models.Purchase_list,
-      // where: {item_name: "과자"},
       where: models.sequelize.where(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month),
       required: false
     }],
@@ -90,8 +89,6 @@ function getByMonth (req,res) {
 }
 
 function getByDay (req,res) {
-  // const nowMonth = moment().format("MM");
-  // const nowDay = moment().format("DD");
   const email = req.body.email;
   const month = req.body.month;
   const day = req.body.day;
@@ -102,6 +99,8 @@ function getByDay (req,res) {
         (models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month),
         (models.sequelize.fn('DAY', models.sequelize.col('purchase_date')), day)
       ),
+      where: models.sequelize.where([(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month),
+    (models.sequelize.fn('DAY', models.sequelize.col('purchase_date')), day)]),
       required: true
     }],
   }).then(list => {
