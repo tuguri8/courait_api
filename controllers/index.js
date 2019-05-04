@@ -264,6 +264,76 @@ async function getByCategory (req,res) {
   }
 }
 
+async function updateBudget (req,res) {
+  const email = req.body.email;
+  const budget = req.body.budget;
+  try {
+    await models.User.update(
+      {
+        budget: parseInt(budget),
+      },
+      {where: {
+              email: email}
+      });
+      return res.status(200).json({success: true, email: email, budget: budget});
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({success: false});
+  }
+}
+
+async function getBudget (req,res) {
+  const email = req.body.email;
+  try {
+    let userInfo = await models.User.findOne({
+      where: {
+          email: email
+      }
+    });
+    return res.status(200).json({success: true, email: email, budget: userInfo.budget});
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({success: false});
+  }
+}
+
+async function compareByBudget (req,res) {
+  const email = req.body.email;
+  const month = moment().format('M');
+  try {
+    let monthlyPrice = 0;
+    const userInfo = await models.User.findOne({
+      where: {
+          email: email
+      }
+    });
+    const budget = userInfo.budget;
+    let list = await models.User.findOne({
+      include: [{
+        model: models.Purchase_list,
+        where: models.sequelize.where(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month),
+        required: true
+      }],
+    });
+    if (list){
+      list = list.purchase_lists;
+      list.forEach((data) => {
+        monthlyPrice += data.price;
+      });
+    }
+    if(monthlyPrice >= budget) {
+      return res.status(200).json({over: true, monthlyPrice: monthlyPrice, budget: budget, diff: monthlyPrice-budget});
+    } else {
+      let diff = budget-monthlyPrice;
+      let daySpend = diff / ((moment().endOf('month').format('D'))-(moment().format('D')));
+      return res.status(200).json({over: false, monthlyPrice: monthlyPrice, budget: budget, diff: diff, daySpend: daySpend});
+    }
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({success: false});
+  }
+}
+
 module.exports = {
     login: login,
     verifyToken: verifyToken,
@@ -272,4 +342,7 @@ module.exports = {
     comparePrevMonth: comparePrevMonth,
     percentByCategory: percentByCategory,
     getByCategory: getByCategory,
+    updateBudget: updateBudget,
+    getBudget: getBudget,
+    compareByBudget: compareByBudget,
 }
