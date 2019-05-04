@@ -121,14 +121,14 @@ async function comparePrevMonth (req,res) {
     let prevTotalPrice = 0;
     let nowTotalPrice = 0;
     let diffPrice;
-    let now_list = models.User.findOne({
+    let now_list = await models.User.findOne({
       include: [{
         model: models.Purchase_list,
         where: models.sequelize.where(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month),
         required: true
       }],
     });
-    let prev_list = models.User.findOne({
+    let prev_list = await models.User.findOne({
       include: [{
         model: models.Purchase_list,
         where: models.sequelize.where(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), moment(month,'M').subtract(1, 'months').format('M')),
