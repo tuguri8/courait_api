@@ -51,7 +51,7 @@ const Purchase_list = sequelize.define('purchase_list', {
   email: { type: Sequelize.STRING, allowNull: false, references: {model: User, key: 'email'}},
   item_name: Sequelize.STRING,
   price: Sequelize.INTEGER,
-  purchase_date: Sequelize.DATE,
+  purchase_date: Sequelize.DATEONLY,
 });
 
 User.hasMany(Purchase_list, {foreignKey: 'email'});
