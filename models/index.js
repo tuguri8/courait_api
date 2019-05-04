@@ -41,8 +41,8 @@ const User = sequelize.define('user', {
   email: { type: Sequelize.STRING, primaryKey: true},
   password: Sequelize.STRING,
   name: Sequelize.STRING,
-  naver_id: Sequelize.STRING,
-  naver_pw: Sequelize.STRING,
+  coupang_id: Sequelize.STRING,
+  coupang_pw: Sequelize.STRING,
   budget: Sequelize.INTEGER,
 });
 
@@ -51,6 +51,8 @@ const Purchase_list = sequelize.define('purchase_list', {
   email: { type: Sequelize.STRING, allowNull: false, references: {model: User, key: 'email'}},
   item_name: Sequelize.STRING,
   price: Sequelize.INTEGER,
+  category: Sequelize.STRING,
+  food_category: Sequelize.STRING,
   purchase_date: Sequelize.DATEONLY,
 });
 
