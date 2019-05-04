@@ -234,38 +234,35 @@ async function percentByCategory (req,res) {
   }
 }
 
-// async function percentByCategory (req,res) {
-//   // let datePrice = {"1": 0, "2": 0, "3": 0, "4": 0, "5": 0,"6": 0, "7": 0, "8": 0, "9": 0, "10": 0,"11": 0, "12": 0, "13": 0, "14": 0, "15": 0,"16": 0,"17": 0, "18": 0, "19": 0, "20": 0, "21": 0, "22": 0, "23": 0, "24": 0, "25": 0, "26": 0, "27": 0, "28": 0, "29": 0, "30": 0, "31": 0};
-//   const email = req.body.email;
-//   const month = req.body.month;
-//   const category = req.body.category;
-//   try {
-//     let list = await models.User.findOne({
-//       include: [{
-//         model: models.Purchase_list,
-//         where: models.sequelize.and((models.sequelize.where(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month)),
-//         ({category: category})),
-//         required: true
-//       }],
-//     });
-//     if (list){
-//       console.log(list);
-//       list = list.purchase_lists;
-//       // let totalPrice = 0;
-//       // list.forEach((data) => {
-//       //   let dataDay = moment(data.purchase_date).format('D');
-//       //   datePrice[dataDay] += data.price;
-//       //   totalPrice += data.price;
-//       // });
-//       return res.status(200).json({list: list});
-//     } else {
-//       return res.status(403).json({success: false, message: "결과없음"});
-//     }
-//   } catch (e) {
-//     console.log(e);
-//     return res.status(500).json({success: false});
-//   }
-// }
+async function getByCategory (req,res) {
+  const email = req.body.email;
+  const month = req.body.month;
+  const category = req.body.category;
+  try {
+    let list = await models.User.findOne({
+      include: [{
+        model: models.Purchase_list,
+        where: models.sequelize.and((models.sequelize.where(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month)),
+        ({category: category})),
+        required: true
+      }],
+    });
+    if (list){
+      console.log(list);
+      list = list.purchase_lists;
+      let totalPrice = 0;
+      list.forEach((data) => {
+        totalPrice += data.price;
+      });
+      return res.status(200).json({success: true, category: category, price: totalPrice, list: list});
+    } else {
+      return res.status(403).json({success: false, message: "결과없음"});
+    }
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({success: false});
+  }
+}
 
 module.exports = {
     login: login,
@@ -274,4 +271,5 @@ module.exports = {
     getByDay: getByDay,
     comparePrevMonth: comparePrevMonth,
     percentByCategory: percentByCategory,
+    getByCategory: getByCategory,
 }

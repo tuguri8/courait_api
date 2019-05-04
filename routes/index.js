@@ -7,5 +7,6 @@ router.post('/month', userController.getByMonth);
 router.post('/day', userController.getByDay);
 router.post('/diff', userController.comparePrevMonth);
 router.post('/percent', userController.percentByCategory);
+router.post('/category', userController.getByCategory);
 
 module.exports = router;
