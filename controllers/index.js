@@ -95,10 +95,6 @@ function getByDay (req,res) {
   models.User.findOne({
     include: [{
       model: models.Purchase_list,
-      where: models.sequelize.and(
-        (models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month),
-        (models.sequelize.fn('DAY', models.sequelize.col('purchase_date')), day)
-      ),
       where: models.sequelize.where([(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month),
     (models.sequelize.fn('DAY', models.sequelize.col('purchase_date')), day)]),
       required: true
