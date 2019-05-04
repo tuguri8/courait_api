@@ -324,9 +324,10 @@ async function compareByBudget (req,res) {
     if(monthlyPrice >= budget) {
       return res.status(200).json({over: true, monthlyPrice: monthlyPrice, budget: budget, diff: monthlyPrice-budget});
     } else {
-      let diff = budget-monthlyPrice;
-      let daySpend = diff / ((moment().endOf('month').format('D'))-(moment().format('D')));
-      return res.status(200).json({over: false, monthlyPrice: monthlyPrice, budget: budget, diff: diff, daySpend: daySpend});
+      const diff = budget-monthlyPrice;
+      const remainDay = (moment().endOf('month').format('D'))-(moment().format('D'));
+      const daySpend = Math.floor(diff / remainDay);
+      return res.status(200).json({over: false, monthlyPrice: monthlyPrice, budget: budget, diff: diff, remainDay: remainDay, daySpend: daySpend});
     }
   } catch (e) {
     console.log(e);
