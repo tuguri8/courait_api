@@ -1,6 +1,7 @@
 require('dotenv').config()
 const models = require('../models');
 const moment = require('moment');
+const rp = require('request-promise');
 
 
 function login (req, res) {
@@ -335,6 +336,51 @@ async function compareByBudget (req,res) {
   }
 }
 
+async function inputPurchase (req,res) {
+  const email = req.body.email;
+  const name = req.body.name;
+  const price = req.body.price;
+  const date = moment().format('YYYY-MM-DD');
+  let food_category = null;
+  try {
+    let options = {
+      method: 'POST',
+      uri: 'http://ec2-13-124-76-148.ap-northeast-2.compute.amazonaws.com:8000/categorize/',
+      body: {
+          content: name
+      },
+      json: true // Automatically stringifies the body to JSON
+    };
+    const nlpResult = await rp(options);
+    const category = nlpResult.category;
+    if(category === "food") {
+      let options = {
+        method: 'POST',
+        uri: 'http://ec2-13-124-76-148.ap-northeast-2.compute.amazonaws.com:8000/food_categorize/',
+        body: {
+            content: name
+        },
+        json: true // Automatically stringifies the body to JSON
+      };
+      const nlpResult2 = await rp(options);
+      food_category = nlpResult2.category;
+    } else {
+      await models.Purchase_list.create({
+        email: email,
+        item_name: name,
+        price: price,
+        category: category,
+        food_category: food_category,
+        purchase_date:date
+      });
+      return res.status(200).json({success: true, email: email, item_name: name, price: price, category: category, food_category: food_category});
+    }
+  } catch (e) {
+    console.log(e);
+    return res.status(200).json({success: false});
+  }
+}
+
 module.exports = {
     login: login,
     verifyToken: verifyToken,
@@ -346,4 +392,5 @@ module.exports = {
     updateBudget: updateBudget,
     getBudget: getBudget,
     compareByBudget: compareByBudget,
+    inputPurchase: inputPurchase,
 }

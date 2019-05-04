@@ -11,6 +11,6 @@ router.post('/category', userController.getByCategory);
 router.put('/budget', userController.updateBudget);
 router.post('/getbudget', userController.getBudget);
 router.post('/comparebudget', userController.compareByBudget);
-
+router.post('/inputPurchase', userController.inputPurchase);
 
 module.exports = router;
