@@ -60,17 +60,17 @@ function verifyToken (req, res) {
   }
 }
 
-function getByMonth (req,res) {
-  // const nowMonth = moment().format("MM");
+async function getByMonth (req,res) {
   const email = req.body.email;
   const month = req.body.month;
-  models.User.findOne({
-    include: [{
-      model: models.Purchase_list,
-      where: models.sequelize.where(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month),
-      required: true
-    }],
-  }).then(list => {
+  try {
+    let list = await models.User.findOne({
+      include: [{
+        model: models.Purchase_list,
+        where: models.sequelize.where(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month),
+        required: true
+      }],
+    });
     if (list){
       console.log(list);
       list = list.purchase_lists;
@@ -82,10 +82,32 @@ function getByMonth (req,res) {
     } else {
       return res.status(403).json({success: false, message: "결과없음"});
     }
-  }).catch(function (err){
-    console.log(err);
+  } catch (e) {
+    console.log(e);
     return res.status(500).json({success: false});
-  });
+  }
+  // models.User.findOne({
+  //   include: [{
+  //     model: models.Purchase_list,
+  //     where: models.sequelize.where(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month),
+  //     required: true
+  //   }],
+  // }).then(list => {
+  //   if (list){
+  //     console.log(list);
+  //     list = list.purchase_lists;
+  //     let totalPrice = 0;
+  //     list.forEach((data) => {
+  //       totalPrice += data.price;
+  //     });
+  //     return res.status(200).json({price: totalPrice, list: list});
+  //   } else {
+  //     return res.status(403).json({success: false, message: "결과없음"});
+  //   }
+  // }).catch(function (err){
+  //   console.log(err);
+  //   return res.status(500).json({success: false});
+  // });
 }
 
 function getByDay (req,res) {
@@ -113,9 +135,37 @@ function getByDay (req,res) {
   });
 }
 
+function comparePrevMonth (req,res) {
+  const email = req.body.email;
+  const month = req.body.month;
+  models.User.findOne({
+    include: [{
+      model: models.Purchase_list,
+      where: models.sequelize.where(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month),
+      required: true
+    }],
+  }).then(list => {
+    if (list){
+      console.log(list);
+      list = list.purchase_lists;
+      let totalPrice = 0;
+      list.forEach((data) => {
+        totalPrice += data.price;
+      });
+      return res.status(200).json({price: totalPrice, list: list});
+    } else {
+      return res.status(403).json({success: false, message: "결과없음"});
+    }
+  }).catch(function (err){
+    console.log(err);
+    return res.status(500).json({success: false});
+  });
+}
+
 module.exports = {
     login: login,
     verifyToken: verifyToken,
     getByMonth: getByMonth,
     getByDay: getByDay,
+    comparePrevMonth: comparePrevMonth,
 }
