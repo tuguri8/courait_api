@@ -364,17 +364,16 @@ async function inputPurchase (req,res) {
       };
       const nlpResult2 = await rp(options2);
       food_category = nlpResult2.category;
-    } else {
-      await models.Purchase_list.create({
-        email: email,
-        item_name: name,
-        price: price,
-        category: category,
-        food_category: food_category,
-        purchase_date:date
-      });
-      return res.status(200).json({success: true, email: email, item_name: name, price: price, category: category, food_category: food_category});
     }
+    await models.Purchase_list.create({
+      email: email,
+      item_name: name,
+      price: price,
+      category: category,
+      food_category: food_category,
+      purchase_date:date
+    });
+    return res.status(200).json({success: true, email: email, item_name: name, price: price, category: category, food_category: food_category});
   } catch (e) {
     console.log(e);
     return res.status(200).json({success: false});
