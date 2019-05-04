@@ -67,7 +67,8 @@ function getByMonth (req,res) {
   models.User.findOne({
     include: [{
       model: models.Purchase_list,
-      where: (models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month),
+      where: {item_name: "과자"},
+      // where: (models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month),
       required: true
     }],
   }).then(list => {
