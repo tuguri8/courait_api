@@ -354,7 +354,7 @@ async function inputPurchase (req,res) {
     const nlpResult = await rp(options);
     const category = nlpResult.category;
     if(category === "food") {
-      let options = {
+      let options2 = {
         method: 'POST',
         uri: 'http://ec2-13-124-76-148.ap-northeast-2.compute.amazonaws.com:8000/food_categorize/',
         body: {
@@ -362,7 +362,7 @@ async function inputPurchase (req,res) {
         },
         json: true // Automatically stringifies the body to JSON
       };
-      const nlpResult2 = await rp(options);
+      const nlpResult2 = await rp(options2);
       food_category = nlpResult2.category;
     } else {
       await models.Purchase_list.create({
