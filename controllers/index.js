@@ -96,7 +96,7 @@ function getByDay (req,res) {
     include: [{
       model: models.Purchase_list,
       where: {
-        $and: [
+        [
           models.sequelize.where(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month),
             models.sequelize.where(models.sequelize.fn('DAY', models.sequelize.col('purchase_date')), day)
         ]
