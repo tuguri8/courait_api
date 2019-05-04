@@ -71,13 +71,13 @@ function getByMonth (req,res) {
       required: true
     }],
   }).then(list => {
-    console.log(list);
-    list = list.purchase_lists;
-    let totalPrice = 0;
-    list.forEach((data) => {
-      totalPrice += data.price;
-    });
     if (list){
+      console.log(list);
+      list = list.purchase_lists;
+      let totalPrice = 0;
+      list.forEach((data) => {
+        totalPrice += data.price;
+      });
       return res.status(200).json({price: totalPrice, list: list});
     } else {
       return res.status(403).json({success: false, message: "결과없음"});
@@ -100,9 +100,9 @@ function getByDay (req,res) {
       required: true
     }],
   }).then(list => {
-    console.log(list);
-    list = list.purchase_lists;
     if (list){
+      console.log(list);
+      list = list.purchase_lists;
       return res.status(200).json({success: true, list: list});
     } else {
       return res.status(403).json({success: false, message: "결과없음"});
