@@ -139,7 +139,7 @@ async function getByDay (req,res) {
               let date = $(this).children('div.my-purchase-list__item-head.my-row.my-font--16.my-font--gothic').children('div.my-purchase-list__item-info.my-col').children('span').children('span').text();
               name = $(this).children('div.my-purchase-list__item-units').children('table').children('tbody').children('tr:nth-child(3)').children('td.my-order-unit__area-item-group').children('div').children('div').children('div.my-order-unit__item-info').children('a').children('div').children('strong').last().text();
               if (date === moment().format('YYYY/M/D')) {
-                purchaseList.push({name: name, category: category, food_caegory: food_category, date: date});
+                purchaseList.push({name: name, category: category, food_category: food_category, date: date});
               }
             });
           }
