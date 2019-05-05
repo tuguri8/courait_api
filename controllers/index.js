@@ -2,7 +2,16 @@ require('dotenv').config()
 const models = require('../models');
 const moment = require('moment');
 const rp = require('request-promise');
+const {Builder, By, Key, until} = require('selenium-webdriver');
+const chrome = require('selenium-webdriver/chrome');
+let driver = new Builder().forBrowser('chrome').setChromeOptions(new chrome.Options().addArguments('--headless')).build();
+const cheerio = require('cheerio');
 
+function sleep(ms){
+    return new Promise(resolve=>{
+        setTimeout(resolve,ms)
+    })
+}
 
 function login (req, res) {
   models.User.findOne({
@@ -96,25 +105,99 @@ async function getByDay (req,res) {
   const email = req.body.email;
   const month = req.body.month;
   const day = req.body.day;
-  try {
-    let list = models.User.findOne({
-      include: [{
-        model: models.Purchase_list,
-        where: models.sequelize.and((models.sequelize.where(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month)),
-        (models.sequelize.where(models.sequelize.fn('DAY', models.sequelize.col('purchase_date')), day))),
-        required: true
-      }],
+  if(day === moment().format('D')) {
+    let userInfo = await models.User.findOne({
+      where: {
+          email: email
+      }
     });
-    if (list){
-      console.log(list);
-      list = list.purchase_lists;
-      return res.status(200).json({success: true, list: list});
-    } else {
-      return res.status(403).json({success: false, message: "결과없음"});
+    try {
+      let purchaseList = [];
+      for (let i = 0; i < 101; i+=5) {
+        await driver.get(`https://my.coupang.com/purchase/list?year=2019&startIndex=${i}&orderTab=ALL_ORDER`);
+        if(i == 0) {
+          await driver.findElement(By.id('login-email-input')).sendKeys(userInfo.coupang_id);
+          await sleep(1000);
+          await driver.findElement(By.id('login-password-input')).sendKeys(userInfo.coupang_pw);
+          await driver.findElement(By.className('login__button')).click();
+          await sleep(1000);
+        }
+        driver.getPageSource().then((title) => {
+          const $ = cheerio.load(title);
+          if($('#listContainer > div.my-purchase-list__no-result.my-color--gray.my-font--14').text().includes('없습니다')) {
+            i = 999;
+          } else {
+            $('#listContainer > div.my-purchase-list__item').each(function (idx){
+              let date = $(this).children('div.my-purchase-list__item-head.my-row.my-font--16.my-font--gothic').children('div.my-purchase-list__item-info.my-col').children('span').children('span').text();
+              let name = $(this).children('div.my-purchase-list__item-units').children('table').children('tbody').children('tr:nth-child(3)').children('td.my-order-unit__area-item-group').children('div').children('div').children('div.my-order-unit__item-info').children('a').children('div').children('strong').last().text();
+              if (date === moment().format('YYYY/M/D')) {
+                let category = null;
+                let food_category = null;
+                let options = {
+                  method: 'POST',
+                  uri: 'http://ec2-13-124-76-148.ap-northeast-2.compute.amazonaws.com:8000/categorize/',
+                  body: {
+                      content: name
+                  },
+                  json: true // Automatically stringifies the body to JSON
+                };
+                const nlpResult = await rp(options);
+                category = nlpResult.category;
+                if(category === "food") {
+                  let options2 = {
+                    method: 'POST',
+                    uri: 'http://ec2-13-124-76-148.ap-northeast-2.compute.amazonaws.com:8000/food_categorize/',
+                    body: {
+                        content: name
+                    },
+                    json: true // Automatically stringifies the body to JSON
+                  };
+                  const nlpResult2 = await rp(options2);
+                  food_category = nlpResult2.category;
+                }
+                purchaseList.push({name: name, category: category, food_caegory: food_category, date: date});
+              }
+            });
+          }
+        });
+        await sleep(1000);
+      }
+      await driver.get('https://login.coupang.com/login/logout.pang?rtnUrl=https%3A%2F%2Fwww.coupang.com%2Fnp%2Fpost%2Flogout%3Fr%3Dhttps%253A%252F%252Fmy.coupang.com%252Fpurchase%252Flist%253Fyear%253D2019%2526startIndex%253D5%2526orderTab%253DALL_ORDER');
+      console.log(purchaseList);
+    } catch(err) {
+      console.log(err);
+      return res.status(500).json({success: false});
+    } finally {
+      console.log('finish');
+      await sleep(1000);
+      await driver.quit();
+      if(purchaseList) {
+        return res.status(200).json({success: true, list: purchaseList});
+      } else {
+        return res.status(403).json({success: false, message: "결과없음"});
+      }
     }
-  } catch (e) {
-    console.log(e);
-    return res.status(500).json({success: false});
+  } else {
+    try {
+      let list = await models.User.findOne({
+        include: [{
+          model: models.Purchase_list,
+          where: models.sequelize.and((models.sequelize.where(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month)),
+          (models.sequelize.where(models.sequelize.fn('DAY', models.sequelize.col('purchase_date')), day))),
+          required: true
+        }],
+      });
+      if (list){
+        console.log(list);
+        list = list.purchase_lists;
+        return res.status(200).json({success: true, list: list});
+      } else {
+        return res.status(403).json({success: false, message: "결과없음"});
+      }
+    } catch (e) {
+      console.log(e);
+      return res.status(500).json({success: false});
+    }
   }
 }
 
