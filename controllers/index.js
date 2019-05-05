@@ -106,6 +106,7 @@ async function getByDay (req,res) {
   const month = req.body.month;
   const day = req.body.day;
   if(day === parseInt(moment().format('D'))) {
+    let purchaseList = [];
     const asyncForEach = async (array, callback) => {
       for (let index = 0; index < array.length; index++) {
         await callback(array[index], index, array)
@@ -117,7 +118,6 @@ async function getByDay (req,res) {
       }
     });
     try {
-      let purchaseList = [];
       let category = null;
       let food_category = null;
       for (let i = 0; i < 101; i+=5) {
