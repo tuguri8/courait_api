@@ -112,7 +112,7 @@ async function getByDay (req,res) {
         await callback(array[index], index, array)
       }
     };
-    let userInfo = await models.User.findAll({
+    let userInfo = await models.User.findOne({
       where: {
           email: email
       }
@@ -120,14 +120,12 @@ async function getByDay (req,res) {
     try {
       let category = null;
       let food_category = null;
-      let coupang_id = userInfo.coupang_id;
-      let coupang_pw = userInfo.coupang_pw;
       for (let i = 0; i < 101; i+=5) {
         await driver.get(`https://my.coupang.com/purchase/list?year=2019&startIndex=${i}&orderTab=ALL_ORDER`);
         if(i == 0) {
-          await driver.findElement(By.id('login-email-input')).sendKeys(coupang_id);
+          await driver.findElement(By.id('login-email-input')).sendKeys(userInfo.coupang_id);
           await sleep(1000);
-          await driver.findElement(By.id('login-password-input')).sendKeys(coupang_pw);
+          await driver.findElement(By.id('login-password-input')).sendKeys(userInfo.coupang_pw);
           await driver.findElement(By.className('login__button')).click();
           await sleep(1000);
         }
