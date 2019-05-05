@@ -105,7 +105,7 @@ async function getByDay (req,res) {
   const email = req.body.email;
   const month = req.body.month;
   const day = req.body.day;
-  if(day === moment().format('D')) {
+  if(day === parseInt(moment().format('D'))) {
     const asyncForEach = async (array, callback) => {
       for (let index = 0; index < array.length; index++) {
         await callback(array[index], index, array)
