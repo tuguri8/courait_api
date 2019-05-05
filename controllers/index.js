@@ -173,6 +173,11 @@ async function getByDay (req,res) {
         }
       });
       console.log(purchaseList);
+      if(purchaseList) {
+        return res.status(200).json({success: true, list: purchaseList});
+      } else {
+        return res.status(403).json({success: false, message: "결과없음"});
+      }
     } catch(err) {
       console.log(err);
       return res.status(500).json({success: false});
@@ -180,11 +185,6 @@ async function getByDay (req,res) {
       console.log('finish');
       await sleep(1000);
       await driver.quit();
-      if(purchaseList) {
-        return res.status(200).json({success: true, list: purchaseList});
-      } else {
-        return res.status(403).json({success: false, message: "결과없음"});
-      }
     }
   } else {
     try {
