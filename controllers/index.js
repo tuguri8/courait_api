@@ -105,85 +105,87 @@ async function getByDay (req,res) {
   const email = req.body.email;
   const month = req.body.month;
   const day = req.body.day;
-  const asyncForEach = async (array, callback) => {
-    for (let index = 0; index < array.length; index++) {
-      await callback(array[index], index, array)
-    }
-  }
   if(day === moment().format('D')) {
+    const asyncForEach = async (array, callback) => {
+      for (let index = 0; index < array.length; index++) {
+        await callback(array[index], index, array)
+      }
+    };
     let userInfo = await models.User.findAll({
       where: {
           email: email
       }
     });
-    await asyncForEach(user, async (data, idx) => {
-      try {
-        let purchaseList = [];
-        for (let i = 0; i < 101; i+=5) {
-          await driver.get(`https://my.coupang.com/purchase/list?year=2019&startIndex=${i}&orderTab=ALL_ORDER`);
-          if(i == 0) {
-            await driver.findElement(By.id('login-email-input')).sendKeys(data.coupang_id);
-            await sleep(1000);
-            await driver.findElement(By.id('login-password-input')).sendKeys(data.coupang_pw);
-            await driver.findElement(By.className('login__button')).click();
-            await sleep(1000);
-          }
-          driver.getPageSource().then((title) => {
-            const $ = cheerio.load(title);
-            if($('#listContainer > div.my-purchase-list__no-result.my-color--gray.my-font--14').text().includes('없습니다')) {
-              i = 999;
-            } else {
-              $('#listContainer > div.my-purchase-list__item').each(function (idx){
-                let date = $(this).children('div.my-purchase-list__item-head.my-row.my-font--16.my-font--gothic').children('div.my-purchase-list__item-info.my-col').children('span').children('span').text();
-                let name = $(this).children('div.my-purchase-list__item-units').children('table').children('tbody').children('tr:nth-child(3)').children('td.my-order-unit__area-item-group').children('div').children('div').children('div.my-order-unit__item-info').children('a').children('div').children('strong').last().text();
-                if (date === moment().format('YYYY/M/D')) {
-                  let category = null;
-                  let food_category = null;
-                  let options = {
-                    method: 'POST',
-                    uri: 'http://ec2-13-124-76-148.ap-northeast-2.compute.amazonaws.com:8000/categorize/',
-                    body: {
-                        content: name
-                    },
-                    json: true // Automatically stringifies the body to JSON
-                  };
-                  const nlpResult = await rp(options);
-                  category = nlpResult.category;
-                  if(category === "food") {
-                    let options2 = {
-                      method: 'POST',
-                      uri: 'http://ec2-13-124-76-148.ap-northeast-2.compute.amazonaws.com:8000/food_categorize/',
-                      body: {
-                          content: name
-                      },
-                      json: true // Automatically stringifies the body to JSON
-                    };
-                    const nlpResult2 = await rp(options2);
-                    food_category = nlpResult2.category;
-                  }
-                  purchaseList.push({name: name, category: category, food_caegory: food_category, date: date});
-                }
-              });
-            }
-          });
+    try {
+      let purchaseList = [];
+      let category = null;
+      let food_category = null;
+      for (let i = 0; i < 101; i+=5) {
+        await driver.get(`https://my.coupang.com/purchase/list?year=2019&startIndex=${i}&orderTab=ALL_ORDER`);
+        if(i == 0) {
+          await driver.findElement(By.id('login-email-input')).sendKeys(userInfo.coupang_id);
+          await sleep(1000);
+          await driver.findElement(By.id('login-password-input')).sendKeys(userInfo.coupang_pw);
+          await driver.findElement(By.className('login__button')).click();
           await sleep(1000);
         }
-        await driver.get('https://login.coupang.com/login/logout.pang?rtnUrl=https%3A%2F%2Fwww.coupang.com%2Fnp%2Fpost%2Flogout%3Fr%3Dhttps%253A%252F%252Fmy.coupang.com%252Fpurchase%252Flist%253Fyear%253D2019%2526startIndex%253D5%2526orderTab%253DALL_ORDER');
-        console.log(purchaseList);
-      } catch(err) {
-        console.log(err);
-        return res.status(500).json({success: false});
-      } finally {
-        console.log('finish');
+        driver.getPageSource().then((title) => {
+          const $ = cheerio.load(title);
+          if($('#listContainer > div.my-purchase-list__no-result.my-color--gray.my-font--14').text().includes('없습니다')) {
+            i = 999;
+          } else {
+            $('#listContainer > div.my-purchase-list__item').each(function (idx){
+              let date = $(this).children('div.my-purchase-list__item-head.my-row.my-font--16.my-font--gothic').children('div.my-purchase-list__item-info.my-col').children('span').children('span').text();
+              let name = $(this).children('div.my-purchase-list__item-units').children('table').children('tbody').children('tr:nth-child(3)').children('td.my-order-unit__area-item-group').children('div').children('div').children('div.my-order-unit__item-info').children('a').children('div').children('strong').last().text();
+              if (date === moment().format('YYYY/M/D')) {
+                purchaseList.push({name: name, category: category, food_caegory: food_category, date: date});
+              }
+            });
+          }
+        });
         await sleep(1000);
-        await driver.quit();
-        if(purchaseList) {
-          return res.status(200).json({success: true, list: purchaseList});
-        } else {
-          return res.status(403).json({success: false, message: "결과없음"});
-        }
       }
-  });
+      await driver.get('https://login.coupang.com/login/logout.pang?rtnUrl=https%3A%2F%2Fwww.coupang.com%2Fnp%2Fpost%2Flogout%3Fr%3Dhttps%253A%252F%252Fmy.coupang.com%252Fpurchase%252Flist%253Fyear%253D2019%2526startIndex%253D5%2526orderTab%253DALL_ORDER');
+      await asyncForEach(purchaseList, async (data, idx) => {
+        let options = {
+          method: 'POST',
+          uri: 'http://ec2-13-124-76-148.ap-northeast-2.compute.amazonaws.com:8000/categorize/',
+          body: {
+              content: name
+          },
+          json: true // Automatically stringifies the body to JSON
+        };
+        const nlpResult = await rp(options);
+        category = nlpResult.category;
+        data.category = category;
+        if(category === "food") {
+          let options2 = {
+            method: 'POST',
+            uri: 'http://ec2-13-124-76-148.ap-northeast-2.compute.amazonaws.com:8000/food_categorize/',
+            body: {
+                content: name
+            },
+            json: true // Automatically stringifies the body to JSON
+          };
+          const nlpResult2 = await rp(options2);
+          food_category = nlpResult2.category;
+          data.food_category = food_category;
+        }
+      });
+      console.log(purchaseList);
+    } catch(err) {
+      console.log(err);
+      return res.status(500).json({success: false});
+    } finally {
+      console.log('finish');
+      await sleep(1000);
+      await driver.quit();
+      if(purchaseList) {
+        return res.status(200).json({success: true, list: purchaseList});
+      } else {
+        return res.status(403).json({success: false, message: "결과없음"});
+      }
+    }
   } else {
     try {
       let list = await models.User.findOne({
