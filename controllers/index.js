@@ -4,7 +4,6 @@ const moment = require('moment');
 const rp = require('request-promise');
 const {Builder, By, Key, until} = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
-let driver = new Builder().forBrowser('chrome').setChromeOptions(new chrome.Options().addArguments('--headless')).build();
 const cheerio = require('cheerio');
 
 function sleep(ms){
@@ -106,6 +105,7 @@ async function getByDay (req,res) {
   const month = req.body.month;
   const day = req.body.day;
   if(day === parseInt(moment().format('D'))) {
+    let driver = new Builder().forBrowser('chrome').setChromeOptions(new chrome.Options().addArguments('--headless')).build();
     let purchaseList = [];
     const asyncForEach = async (array, callback) => {
       for (let index = 0; index < array.length; index++) {
