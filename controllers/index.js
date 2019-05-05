@@ -120,6 +120,7 @@ async function getByDay (req,res) {
     try {
       let category = null;
       let food_category = null;
+      let name = null;
       for (let i = 0; i < 101; i+=5) {
         await driver.get(`https://my.coupang.com/purchase/list?year=2019&startIndex=${i}&orderTab=ALL_ORDER`);
         if(i == 0) {
@@ -136,7 +137,7 @@ async function getByDay (req,res) {
           } else {
             $('#listContainer > div.my-purchase-list__item').each(function (idx){
               let date = $(this).children('div.my-purchase-list__item-head.my-row.my-font--16.my-font--gothic').children('div.my-purchase-list__item-info.my-col').children('span').children('span').text();
-              let name = $(this).children('div.my-purchase-list__item-units').children('table').children('tbody').children('tr:nth-child(3)').children('td.my-order-unit__area-item-group').children('div').children('div').children('div.my-order-unit__item-info').children('a').children('div').children('strong').last().text();
+              name = $(this).children('div.my-purchase-list__item-units').children('table').children('tbody').children('tr:nth-child(3)').children('td.my-order-unit__area-item-group').children('div').children('div').children('div.my-order-unit__item-info').children('a').children('div').children('strong').last().text();
               if (date === moment().format('YYYY/M/D')) {
                 purchaseList.push({name: name, category: category, food_caegory: food_category, date: date});
               }
