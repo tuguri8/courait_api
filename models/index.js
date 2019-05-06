@@ -44,24 +44,60 @@ const User = sequelize.define('user', {
   phone: { type: Sequelize.STRING(20), allowNull: false},
   coupang_id: { type: Sequelize.STRING(30), allowNull: false},
   coupang_pw: { type: Sequelize.STRING(20), allowNull: false},
-  budget: { type: Sequelize.INTEGER, allowNull: false},
+  budget: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 0},
 });
 
 const Purchase_list = sequelize.define('purchase_list', {
   id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
-  email: { type: Sequelize.STRING, allowNull: false, references: {model: User, key: 'email'}},
-  item_name: Sequelize.STRING,
-  price: Sequelize.INTEGER,
-  category: Sequelize.STRING,
-  food_category: Sequelize.STRING,
+  email: { type: Sequelize.STRING(30), allowNull: false, references: {model: User, key: 'email'}},
+  item_name: { type: Sequelize.STRING(100), allowNull: false},
+  price: { type: Sequelize.INTEGER, allowNull: false},
+  category: { type: Sequelize.STRING(20), allowNull: false},
+  food_category: { type: Sequelize.STRING(20) },
   purchase_date: Sequelize.DATEONLY,
 });
 
+const Excel = sequelize.define('excel', {
+  id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
+  email: { type: Sequelize.STRING(30), allowNull: false, references: {model: User, key: 'email'}},
+  url: { type: Sequelize.STRING(100), allowNull: false},
+  date: Sequelize.DATEONLY,
+});
+
+const Feedback = sequelize.define('feedback', {
+  id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
+  email: { type: Sequelize.STRING(30), allowNull: false, references: {model: User, key: 'email'}},
+  name: { type: Sequelize.STRING(10), allowNull: false},
+  content: { type: Sequelize.TEXT, allowNull: false},
+  date: Sequelize.DATEONLY,
+});
+
+const Alarm = sequelize.define('alarm', {
+  id: {type: Sequelize.INTEGER, primaryKey: true, autoIncrement: true},
+  email: { type: Sequelize.STRING(30), allowNull: false, references: {model: User, key: 'email'}},
+  food_category: { type: Sequelize.STRING(20), allowNull: false},
+  date: Sequelize.DATEONLY,
+});
+
+const Admin = sequelize.define('admin', {
+  email: { type: Sequelize.STRING(30), allowNull: false, primaryKey: true},
+  password: { type: Sequelize.STRING(20), allowNull: false},
+  name: { type: Sequelize.STRING(10), allowNull: false},
+  phone: { type: Sequelize.STRING(20), allowNull: false},
+});
+
 User.hasMany(Purchase_list, {foreignKey: 'email'});
+User.hasMany(Excel, {foreignKey: 'email'});
+User.hasMany(Feedback, {foreignKey: 'email'});
+User.hasMany(Alarm, {foreignKey: 'email'});
 
 
 module.exports = {
     sequelize: sequelize,
     User: User,
     Purchase_list: Purchase_list,
+    Excel: Excel,
+    Feedback: Feedback,
+    Alarm: Alarm,
+    Admin: Admin,
 };
