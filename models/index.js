@@ -29,7 +29,7 @@ const sequelize = new Sequelize(
             // disable the modification of tablenames; By default, sequelize will automatically
             // transform all passed model names (first parameter of define) into plural.
             // if you don't want that, set the following
-            freezeTableName: false,
+            freezeTableName: true,
         }
 
     }
@@ -38,12 +38,13 @@ const sequelize = new Sequelize(
 
 
 const User = sequelize.define('user', {
-  email: { type: Sequelize.STRING, primaryKey: true},
-  password: Sequelize.STRING,
-  name: Sequelize.STRING,
-  coupang_id: Sequelize.STRING,
-  coupang_pw: Sequelize.STRING,
-  budget: Sequelize.INTEGER,
+  email: { type: Sequelize.STRING(30), allowNull: false, primaryKey: true},
+  password: { type: Sequelize.STRING(20), allowNull: false},
+  name: { type: Sequelize.STRING(10), allowNull: false},
+  phone: { type: Sequelize.STRING(20), allowNull: false},
+  coupang_id: { type: Sequelize.STRING(30), allowNull: false},
+  coupang_pw: { type: Sequelize.STRING(20), allowNull: false},
+  budget: { type: Sequelize.INTEGER, allowNull: false},
 });
 
 const Purchase_list = sequelize.define('purchase_list', {
