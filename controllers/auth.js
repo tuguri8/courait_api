@@ -17,7 +17,7 @@ function login(req, res) {
         email: user.email,
       }, process.env.jwt_secret,
       {
-        expiresIn: '60m',
+        expiresIn: '7d',
       });
       return res.status(200).json({
         success: true,
