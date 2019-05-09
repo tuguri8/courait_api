@@ -1,7 +1,5 @@
 const models = require('../models');
 
-module.exports = () => {
-	return models.sequelize.sync({
-		// alter: true
-	})
-}
+module.exports = () => models.sequelize.sync({
+  // alter: true
+});
