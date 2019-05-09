@@ -2,7 +2,7 @@ var express = require('express');
 var router = express.Router();
 const userController = require('../controllers/index');
 
-router.get('/', userController.login);
+router.post('/login', userController.login);
 router.post('/month', userController.getByMonth);
 router.post('/day', userController.getByDay);
 router.post('/diff', userController.comparePrevMonth);
