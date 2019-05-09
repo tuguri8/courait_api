@@ -5,6 +5,8 @@ const rp = require('request-promise');
 const {Builder, By, Key, until} = require('selenium-webdriver');
 const chrome = require('selenium-webdriver/chrome');
 const cheerio = require('cheerio');
+const crypto = require('crypto');
+const jwt = require('jsonwebtoken');
 
 function sleep(ms){
     return new Promise(resolve=>{
