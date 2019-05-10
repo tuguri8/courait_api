@@ -6,8 +6,8 @@ const authMiddleware = require('../middleware/auth');
 
 router.use(authMiddleware);
 router.get('/budget', controller.user.getBudget);
-router.post('/feedback', controller.user.feedback); // TODO
-router.post('/logout', controller.user.logout); // TODO
+router.post('/feedback', controller.user.feedback);
+router.post('/logout', controller.user.logout);
 router.put('/budget', controller.user.updateBudget);
 router.delete('/withdrawl', controller.user.withdrawl); // TODO
 
