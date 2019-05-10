@@ -9,7 +9,7 @@ const sendMail = async (addr, title, text) => {
     const params = {
       Destination: { /* required */
         CcAddresses: [
-          'tuguri8@gmail.com',
+          process.env.MAIL_ADDR,
         /* more items */
         ],
         ToAddresses: [
@@ -29,9 +29,9 @@ const sendMail = async (addr, title, text) => {
           Data: title,
         },
       },
-      Source: '쿠레이트 <tuguri8@gmail.com>', /* required */
+      Source: `CourAIt <${process.env.MAIL_ADDR}>`, /* required */
       ReplyToAddresses: [
-        'tuguri8@gmail.com',
+        process.env.MAIL_ADDR,
         /* more items */
       ],
     };
