@@ -1,7 +1,7 @@
 require('dotenv').config();
 const AWS = require('aws-sdk');
 
-AWS.config.loadFromPath('../awscreds.json');
+AWS.config.loadFromPath('./awscreds.json');
 AWS.config.update({ region: 'us-west-2' });
 
 const sendMail = async (addr, title, text) => {
