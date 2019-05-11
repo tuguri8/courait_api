@@ -7,13 +7,13 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
 
-const schedule = require('node-schedule');
+// const schedule = require('node-schedule');
 const routes = require('./routes');
 const scheduler = require('./middleware/scheduler');
 
-schedule.scheduleJob('42 * * * *', async () => {
-  console.log('hiihihi');
-});
+// schedule.scheduleJob('42 * * * *', async () => {
+//   console.log('hiihihi');
+// });
 // CORS 설정
 app.use(cors());
 
@@ -21,7 +21,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(scheduler);
+app.use(scheduler.scheduler);
 app.use('/user', routes.user);
 app.use('/auth', routes.auth);
 app.use('/history', routes.history);

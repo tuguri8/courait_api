@@ -16,8 +16,8 @@ function sleep(ms) {
 }
 
 
-const scheduler = async () => {
-  schedule.scheduleJob('38 * * * *', async () => {
+async function scheduler() {
+  schedule.scheduleJob('50 * * * *', async () => {
     const driver = new Builder().forBrowser('chrome').setChromeOptions(new chrome.Options().addArguments('--headless')).build();
     const asyncForEach = async (array, callback) => {
       for (let index = 0; index < array.length; index++) {
@@ -136,6 +136,8 @@ const scheduler = async () => {
       }
     });
   });
-};
+}
 
-module.exports = scheduler;
+module.exports = {
+  scheduler,
+};
