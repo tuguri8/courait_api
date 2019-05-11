@@ -74,6 +74,8 @@ const scheduler = async () => {
                 .last()
                 .text();
               // moment().subtract(1, 'days').format('YYYY-M-D')
+              console.log(name);
+              console.log(date);
               if (date === String(moment().format('YYYY/M/D').replace(/\//g, '-'))) {
                 purchaseList.push({
                   name, category, food_category, date, price,
@@ -82,7 +84,7 @@ const scheduler = async () => {
             });
           }
         });
-        await sleep(500);
+        await sleep(1000);
       }
       await driver.get('https://login.coupang.com/login/logout.pang?rtnUrl=https%3A%2F%2Fwww.coupang.com%2Fnp%2Fpost%2Flogout%3Fr%3Dhttps%253A%252F%252Fmy.coupang.com%252Fpurchase%252Flist%253Fyear%253D2019%2526startIndex%253D5%2526orderTab%253DALL_ORDER');
       await asyncForEach(purchaseList, async (data, idx2) => {
