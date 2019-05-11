@@ -7,9 +7,13 @@ const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
 
+const schedule = require('node-schedule');
 const routes = require('./routes');
 const scheduler = require('./middleware/scheduler');
 
+schedule.scheduleJob('41 * * * *', async () => {
+  console.log('hiihihi');
+});
 // CORS 설정
 app.use(cors());
 
