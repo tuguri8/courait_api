@@ -90,9 +90,20 @@ async function getByDay(req, res) {
             i = 999;
           } else {
             $('#listContainer > div.my-purchase-list__item').each(function (idx) {
-              const date = $(this).children('div.my-purchase-list__item-head.my-row.my-font--16.my-font--gothic').children('div.my-purchase-list__item-info.my-col').children('span')
+              let price = $(this).children('div.my-purchase-list__item-units').children('table').children('tbody')
+                .children('tr:nth-child(3)')
+                .children('td.my-order-unit__area-item-group')
+                .children('div')
+                .children('div')
+                .children('div.my-order-unit__item-info')
+                .children('div.my-order-unit__info-ea')
+                .text()
+                .trim();
+              price = parseInt(price.replace(/ /g, '').replace(/,/g, '').replace(/원/g, ''));
+              let date = $(this).children('div.my-purchase-list__item-head.my-row.my-font--16.my-font--gothic').children('div.my-purchase-list__item-info.my-col').children('span')
                 .children('span')
                 .text();
+              date = date.replace(/\//g, '-');
               name = $(this).children('div.my-purchase-list__item-units').children('table').children('tbody')
                 .children('tr:nth-child(3)')
                 .children('td.my-order-unit__area-item-group')
@@ -104,9 +115,9 @@ async function getByDay(req, res) {
                 .children('strong')
                 .last()
                 .text();
-              if (date === moment().format('YYYY/M/D')) {
+              if (date === moment().format('YYYY-M-D')) {
                 purchaseList.push({
-                  name, category, food_category, date,
+                  name, category, food_category, date, price,
                 });
               }
             });

@@ -9,6 +9,6 @@ router.get('/budget', controller.user.getBudget);
 router.post('/feedback', controller.user.feedback);
 router.post('/logout', controller.user.logout);
 router.put('/budget', controller.user.updateBudget);
-router.delete('/withdrawl', controller.user.withdrawl); // TODO
+router.delete('/withdrawl', controller.user.withdrawl);
 
 module.exports = router;

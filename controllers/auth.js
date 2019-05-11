@@ -39,7 +39,34 @@ function login(req, res) {
 }
 
 async function register(req, res) {
-
+  const { email } = req.body;
+  const { password } = req.body;
+  const { name } = req.body;
+  const { phone } = req.body;
+  const { coupang_id } = req.body;
+  const { coupang_pw } = req.body;
+  try {
+    const userInfo = await models.User.findOne({
+      where: {
+        email: req.body.email,
+      },
+    });
+    if (userInfo) {
+      return res.status(500).json({ success: false, message: '중복된 ID입니다' });
+    }
+    await models.User.create({
+      email,
+      password,
+      name,
+      phone,
+      coupang_id,
+      coupang_pw,
+    });
+    return res.status(200).json({ success: true });
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({ success: false });
+  }
 }
 
 async function searchID(req, res) {
