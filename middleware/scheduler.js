@@ -18,6 +18,7 @@ function sleep(ms) {
 
 const scheduler = async () => {
   console.log('스케쥴러 시작');
+  await sleep(1000);
   const driver = new Builder().forBrowser('chrome').setChromeOptions(new chrome.Options().addArguments('--headless')).build();
   const asyncForEach = async (array, callback) => {
     for (let index = 0; index < array.length; index++) {
@@ -110,6 +111,7 @@ const scheduler = async () => {
           data.food_category = food_category;
         }
       });
+      await sleep(1000);
       console.log(purchaseList);
       if (purchaseList) {
         await asyncForEach(purchaseList, async (item_data, item_idx) => {
