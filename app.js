@@ -21,7 +21,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(scheduler.scheduler);
+app.use(scheduler);
 app.use('/user', routes.user);
 app.use('/auth', routes.auth);
 app.use('/history', routes.history);
