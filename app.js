@@ -11,7 +11,7 @@ const schedule = require('node-schedule');
 const routes = require('./routes');
 const scheduler = require('./middleware/scheduler');
 
-schedule.scheduleJob('42 * * * *', async () => {
+schedule.scheduleJob('51 * * * *', async () => {
   scheduler();
 });
 // CORS 설정

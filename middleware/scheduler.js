@@ -58,10 +58,10 @@ const scheduler = async () => {
                 .text()
                 .trim();
               price = parseInt(price.replace(/ /g, '').replace(/,/g, '').replace(/원/g, ''));
-              let date = $(this).children('div.my-purchase-list__item-head.my-row.my-font--16.my-font--gothic').children('div.my-purchase-list__item-info.my-col').children('span')
+              const date = $(this).children('div.my-purchase-list__item-head.my-row.my-font--16.my-font--gothic').children('div.my-purchase-list__item-info.my-col').children('span')
                 .children('span')
                 .text();
-              date = String(date.replace(/\//g, '-'));
+              // date = String(date.replace(/\//g, '-'));
               name = $(this).children('div.my-purchase-list__item-units').children('table').children('tbody')
                 .children('tr:nth-child(3)')
                 .children('td.my-order-unit__area-item-group')
@@ -74,7 +74,7 @@ const scheduler = async () => {
                 .last()
                 .text();
               // moment().subtract(1, 'days').format('YYYY-M-D')
-              if (date === String(moment().format('YYYY/M/D').replace(/\//g, '-'))) {
+              if (date === moment().format('YYYY/M/D')) {
                 purchaseList.push({
                   name, category, food_category, date, price,
                 });
