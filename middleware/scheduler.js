@@ -16,125 +16,127 @@ function sleep(ms) {
 }
 
 
-const scheduler = schedule.scheduleJob('55 * * * *', async () => {
-  console.log('스케쥴러 시작');
-  const driver = new Builder().forBrowser('chrome').setChromeOptions(new chrome.Options().addArguments('--headless')).build();
-  const asyncForEach = async (array, callback) => {
-    for (let index = 0; index < array.length; index++) {
-      await callback(array[index], index, array);
-    }
-  };
-  const userInfo = await models.User.findAll({
-  });
-  await asyncForEach(userInfo, async (user, idx) => {
-    try {
-      const purchaseList = [];
-      let category = null;
-      let food_category = null;
-      let name = null;
-      for (let i = 0; i < 51; i += 5) {
-        await driver.get(`https://my.coupang.com/purchase/list?year=2019&startIndex=${i}&orderTab=ALL_ORDER`);
-        if (i === 0) {
-          await driver.findElement(By.id('login-email-input')).sendKeys(user.coupang_id);
-          await sleep(500);
-          await driver.findElement(By.id('login-password-input')).sendKeys(user.coupang_pw);
-          await driver.findElement(By.className('login__button')).click();
+const scheduler = () => {
+  schedule.scheduleJob('57 * * * *', async () => {
+    console.log('스케쥴러 시작');
+    const driver = new Builder().forBrowser('chrome').setChromeOptions(new chrome.Options().addArguments('--headless')).build();
+    const asyncForEach = async (array, callback) => {
+      for (let index = 0; index < array.length; index++) {
+        await callback(array[index], index, array);
+      }
+    };
+    const userInfo = await models.User.findAll({
+    });
+    await asyncForEach(userInfo, async (user, idx) => {
+      try {
+        const purchaseList = [];
+        let category = null;
+        let food_category = null;
+        let name = null;
+        for (let i = 0; i < 51; i += 5) {
+          await driver.get(`https://my.coupang.com/purchase/list?year=2019&startIndex=${i}&orderTab=ALL_ORDER`);
+          if (i === 0) {
+            await driver.findElement(By.id('login-email-input')).sendKeys(user.coupang_id);
+            await sleep(500);
+            await driver.findElement(By.id('login-password-input')).sendKeys(user.coupang_pw);
+            await driver.findElement(By.className('login__button')).click();
+            await sleep(500);
+          }
+          driver.getPageSource().then((title) => {
+            const $ = cheerio.load(title);
+            if ($('#listContainer > div.my-purchase-list__no-result.my-color--gray.my-font--14').text().includes('없습니다')) {
+              i = 999;
+            } else {
+              $('#listContainer > div.my-purchase-list__item').each(function (idx) {
+                let price = $(this).children('div.my-purchase-list__item-units').children('table').children('tbody')
+                  .children('tr:nth-child(3)')
+                  .children('td.my-order-unit__area-item-group')
+                  .children('div')
+                  .children('div')
+                  .children('div.my-order-unit__item-info')
+                  .children('div.my-order-unit__info-ea')
+                  .text()
+                  .trim();
+                price = parseInt(price.replace(/ /g, '').replace(/,/g, '').replace(/원/g, ''));
+                let date = $(this).children('div.my-purchase-list__item-head.my-row.my-font--16.my-font--gothic').children('div.my-purchase-list__item-info.my-col').children('span')
+                  .children('span')
+                  .text();
+                date = date.replace(/\//g, '-');
+                name = $(this).children('div.my-purchase-list__item-units').children('table').children('tbody')
+                  .children('tr:nth-child(3)')
+                  .children('td.my-order-unit__area-item-group')
+                  .children('div')
+                  .children('div')
+                  .children('div.my-order-unit__item-info')
+                  .children('a')
+                  .children('div')
+                  .children('strong')
+                  .last()
+                  .text();
+                // moment().subtract(1, 'days').format('YYYY-M-D')
+                if (date === moment().format('YYYY-M-D')) {
+                  purchaseList.push({
+                    name, category, food_category, date, price,
+                  });
+                }
+              });
+            }
+          });
           await sleep(500);
         }
-        driver.getPageSource().then((title) => {
-          const $ = cheerio.load(title);
-          if ($('#listContainer > div.my-purchase-list__no-result.my-color--gray.my-font--14').text().includes('없습니다')) {
-            i = 999;
-          } else {
-            $('#listContainer > div.my-purchase-list__item').each(function (idx) {
-              let price = $(this).children('div.my-purchase-list__item-units').children('table').children('tbody')
-                .children('tr:nth-child(3)')
-                .children('td.my-order-unit__area-item-group')
-                .children('div')
-                .children('div')
-                .children('div.my-order-unit__item-info')
-                .children('div.my-order-unit__info-ea')
-                .text()
-                .trim();
-              price = parseInt(price.replace(/ /g, '').replace(/,/g, '').replace(/원/g, ''));
-              let date = $(this).children('div.my-purchase-list__item-head.my-row.my-font--16.my-font--gothic').children('div.my-purchase-list__item-info.my-col').children('span')
-                .children('span')
-                .text();
-              date = date.replace(/\//g, '-');
-              name = $(this).children('div.my-purchase-list__item-units').children('table').children('tbody')
-                .children('tr:nth-child(3)')
-                .children('td.my-order-unit__area-item-group')
-                .children('div')
-                .children('div')
-                .children('div.my-order-unit__item-info')
-                .children('a')
-                .children('div')
-                .children('strong')
-                .last()
-                .text();
-              // moment().subtract(1, 'days').format('YYYY-M-D')
-              if (date === moment().format('YYYY-M-D')) {
-                purchaseList.push({
-                  name, category, food_category, date, price,
-                });
-              }
-            });
-          }
-        });
-        await sleep(500);
-      }
-      await driver.get('https://login.coupang.com/login/logout.pang?rtnUrl=https%3A%2F%2Fwww.coupang.com%2Fnp%2Fpost%2Flogout%3Fr%3Dhttps%253A%252F%252Fmy.coupang.com%252Fpurchase%252Flist%253Fyear%253D2019%2526startIndex%253D5%2526orderTab%253DALL_ORDER');
-      await asyncForEach(purchaseList, async (data, idx2) => {
-        const options = {
-          method: 'POST',
-          uri: 'http://ec2-13-124-76-148.ap-northeast-2.compute.amazonaws.com:8000/categorize/',
-          body: {
-            content: name,
-          },
-          json: true, // Automatically stringifies the body to JSON
-        };
-        const nlpResult = await rp(options);
-        category = nlpResult.category;
-        data.category = category;
-        if (category === 'food') {
-          const options2 = {
+        await driver.get('https://login.coupang.com/login/logout.pang?rtnUrl=https%3A%2F%2Fwww.coupang.com%2Fnp%2Fpost%2Flogout%3Fr%3Dhttps%253A%252F%252Fmy.coupang.com%252Fpurchase%252Flist%253Fyear%253D2019%2526startIndex%253D5%2526orderTab%253DALL_ORDER');
+        await asyncForEach(purchaseList, async (data, idx2) => {
+          const options = {
             method: 'POST',
-            uri: 'http://ec2-13-124-76-148.ap-northeast-2.compute.amazonaws.com:8000/food_categorize/',
+            uri: 'http://ec2-13-124-76-148.ap-northeast-2.compute.amazonaws.com:8000/categorize/',
             body: {
               content: name,
             },
             json: true, // Automatically stringifies the body to JSON
           };
-          const nlpResult2 = await rp(options2);
-          food_category = nlpResult2.category;
-          data.food_category = food_category;
-        }
-      });
-      console.log(purchaseList);
-      if (purchaseList) {
-        await asyncForEach(purchaseList, async (item_data, item_idx) => {
-          await models.Purchase_list.create({
-            email: user.email,
-            item_name: item_data.name,
-            category: item_data.category,
-            food_category: item_data.food_category,
-            price: item_data.price,
-            date: item_data.date,
-          });
+          const nlpResult = await rp(options);
+          category = nlpResult.category;
+          data.category = category;
+          if (category === 'food') {
+            const options2 = {
+              method: 'POST',
+              uri: 'http://ec2-13-124-76-148.ap-northeast-2.compute.amazonaws.com:8000/food_categorize/',
+              body: {
+                content: name,
+              },
+              json: true, // Automatically stringifies the body to JSON
+            };
+            const nlpResult2 = await rp(options2);
+            food_category = nlpResult2.category;
+            data.food_category = food_category;
+          }
         });
-        // return { success: true, list: purchaseList };
+        console.log(purchaseList);
+        if (purchaseList) {
+          await asyncForEach(purchaseList, async (item_data, item_idx) => {
+            await models.Purchase_list.create({
+              email: user.email,
+              item_name: item_data.name,
+              category: item_data.category,
+              food_category: item_data.food_category,
+              price: item_data.price,
+              date: item_data.date,
+            });
+          });
+          // return { success: true, list: purchaseList };
+        }
+        // return { success: false, message: '결과없음' };
+        if (idx === userInfo.length - 1) await driver.quit();
+      } catch (err) {
+        console.log(err);
+        // return { success: false };
+      } finally {
+        console.log('finish');
+        // await sleep(500);
+        // await driver.quit();
       }
-      // return { success: false, message: '결과없음' };
-      if (idx === userInfo.length - 1) await driver.quit();
-    } catch (err) {
-      console.log(err);
-      // return { success: false };
-    } finally {
-      console.log('finish');
-      // await sleep(500);
-      // await driver.quit();
-    }
+    });
   });
-});
+};
 
 module.exports = scheduler;
