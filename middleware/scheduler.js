@@ -76,7 +76,7 @@ const scheduler = async () => {
               // moment().subtract(1, 'days').format('YYYY-M-D')
               console.log(name);
               console.log(date);
-              if (date === String(moment().format('YYYY/M/D').replace(/\//g, '-'))) {
+              if (date === String(moment().subtract(1, 'days').format('YYYY/M/D').replace(/\//g, '-'))) {
                 purchaseList.push({
                   name, category, food_category, date, price,
                 });
