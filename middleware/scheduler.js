@@ -16,7 +16,7 @@ function sleep(ms) {
 }
 
 
-schedule.scheduleJob('23 * * * *', async () => {
+schedule.scheduleJob('27 * * * *', async () => {
   const driver = new Builder().forBrowser('chrome').setChromeOptions(new chrome.Options().addArguments('--headless')).build();
   const asyncForEach = async (array, callback) => {
     for (let index = 0; index < array.length; index++) {
