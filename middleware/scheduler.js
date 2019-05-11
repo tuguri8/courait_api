@@ -119,7 +119,7 @@ const scheduler = async () => {
             category: item_data.category,
             food_category: item_data.food_category,
             price: item_data.price,
-            date: item_data.date,
+            purchase_date: item_data.date,
           });
         });
         // return { success: true, list: purchaseList };
@@ -131,7 +131,7 @@ const scheduler = async () => {
       // return { success: false };
     } finally {
       console.log('finish');
-      // await sleep(500);
+      await sleep(1000);
       // await driver.quit();
     }
   });
