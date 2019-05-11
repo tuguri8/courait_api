@@ -90,7 +90,7 @@ const scheduler = async () => {
           method: 'POST',
           uri: 'http://ec2-13-124-76-148.ap-northeast-2.compute.amazonaws.com:8000/categorize/',
           body: {
-            content: name,
+            content: data.name,
           },
           json: true, // Automatically stringifies the body to JSON
         };
@@ -102,7 +102,7 @@ const scheduler = async () => {
             method: 'POST',
             uri: 'http://ec2-13-124-76-148.ap-northeast-2.compute.amazonaws.com:8000/food_categorize/',
             body: {
-              content: name,
+              content: data.name,
             },
             json: true, // Automatically stringifies the body to JSON
           };
