@@ -60,7 +60,7 @@ const scheduler = async () => {
               let date = $(this).children('div.my-purchase-list__item-head.my-row.my-font--16.my-font--gothic').children('div.my-purchase-list__item-info.my-col').children('span')
                 .children('span')
                 .text();
-              date = date.replace(/\//g, '-');
+              date = String(date.replace(/\//g, '-'));
               name = $(this).children('div.my-purchase-list__item-units').children('table').children('tbody')
                 .children('tr:nth-child(3)')
                 .children('td.my-order-unit__area-item-group')
