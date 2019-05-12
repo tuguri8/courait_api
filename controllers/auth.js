@@ -45,7 +45,7 @@ function login(req, res) {
     console.log(err);
     res.status(500).json({
       success: false,
-      message: 'Server Error',
+      message: 'email or password incorrect',
     });
   });
 }
@@ -68,7 +68,7 @@ async function register(req, res) {
       },
     });
     if (userInfo) {
-      return res.status(500).json({ success: false, message: '중복된 ID입니다' });
+      return res.status(501).json({ success: false, message: '중복된 ID입니다' });
     }
     // await driver.get('https://my.coupang.com/purchase/list?year=2019&startIndex=1&orderTab=ALL_ORDER');
     // await driver.findElement(By.id('login-email-input')).sendKeys(userInfo.coupang_id);
@@ -139,7 +139,7 @@ async function searchPW(req, res) {
       });
     } catch (e) {
       console.log(e);
-      res.status(500).json({
+      res.status(501).json({
         success: false,
         message: 'Mail Server Error',
       });
