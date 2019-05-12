@@ -105,7 +105,7 @@ async function searchID(req, res) {
   if (userInfo) {
     res.status(200).json({
       success: true,
-      email: userInfo.email,
+      message: `${userInfo.name}님의 아이디는 ${userInfo.email} 입니다.`,
     });
   } else {
     res.status(500).json({
@@ -129,7 +129,10 @@ async function searchPW(req, res) {
     const decipheredPassword = decipher.final('utf8');
     try {
       await mailer(userInfo.email, `${userInfo.name} 님의 비밀번호 찾기 결과입니다`, decipheredPassword);
-      res.status(200).json({ success: true });
+      res.status(200).json({
+        success: true,
+        message: `${req.body.name}님의 비밀번호가 이메일로 전송되었습니다.`,
+      });
     } catch (e) {
       console.log(e);
       res.status(500).json({
