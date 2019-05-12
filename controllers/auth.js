@@ -1,8 +1,19 @@
 require('dotenv').config();
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+const {
+  Builder, By,
+} = require('selenium-webdriver');
+const chrome = require('selenium-webdriver/chrome');
+const cheerio = require('cheerio');
 const models = require('../models');
 const mailer = require('../middleware/mail');
+
+function sleep(ms) {
+  return new Promise((resolve) => {
+    setTimeout(resolve, ms);
+  });
+}
 
 function login(req, res) {
   models.User.findOne({
@@ -39,13 +50,14 @@ function login(req, res) {
 }
 
 async function register(req, res) {
-  const { email } = req.body;
-  const { password } = req.body;
-  const { name } = req.body;
-  const { phone } = req.body;
-  const { coupang_id } = req.body;
-  const { coupang_pw } = req.body;
+  // const driver = new Builder().forBrowser('chrome').setChromeOptions(new chrome.Options().addArguments('--headless')).build();
   try {
+    const { email } = req.body;
+    const { password } = req.body;
+    const { name } = req.body;
+    const { phone } = req.body;
+    const { coupang_id } = req.body;
+    const { coupang_pw } = req.body;
     const userInfo = await models.User.findOne({
       where: {
         email: req.body.email,
@@ -54,6 +66,20 @@ async function register(req, res) {
     if (userInfo) {
       return res.status(500).json({ success: false, message: '중복된 ID입니다' });
     }
+    // await driver.get('https://my.coupang.com/purchase/list?year=2019&startIndex=1&orderTab=ALL_ORDER');
+    // await driver.findElement(By.id('login-email-input')).sendKeys(userInfo.coupang_id);
+    // await sleep(1000);
+    // await driver.findElement(By.id('login-password-input')).sendKeys(userInfo.coupang_pw);
+    // await driver.findElement(By.className('login__button')).click();
+    // await sleep(1000);
+    // driver.getPageSource().then((title) => {
+    //   const $ = cheerio.load(title);
+    //   if ($('#listContainer > div.my-purchase-list__no-result.my-color--gray.my-font--14').text().includes('없습니다')) {
+    //
+    //   } else {
+    //
+    //   }
+    // });
     await models.User.create({
       email,
       password,

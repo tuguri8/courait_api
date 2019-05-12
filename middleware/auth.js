@@ -13,6 +13,7 @@ const authMiddleware = (req, res, next) => {
 
   const decoded = jwt.verify(token, process.env.jwt_secret);
   if (decoded) {
+    console.log('토큰 검증 성공');
     req.decoded = decoded;
     next();
   } else {
