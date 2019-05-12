@@ -36,13 +36,13 @@ function login(req, res) {
         token,
       });
     }
-    return res.status(500).json({
+    return res.status(203).json({
       success: false,
       message: 'email or password incorrect',
     });
   }).catch((err) => {
     console.log(err);
-    res.status(500).json({
+    res.status(203).json({
       success: false,
       message: 'Server Error',
     });
