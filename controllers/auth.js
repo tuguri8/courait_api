@@ -58,6 +58,9 @@ async function register(req, res) {
   const { phone } = req.body;
   const { coupang_id } = req.body;
   const { coupang_pw } = req.body;
+  if (email === undefined || password === undefined || name === undefined || phone === undefined || coupang_id === undefined || coupang_pw === undefined) {
+    return res.status(502).json({ success: false, message: '양식을 다 입력하세요!' });
+  }
   try {
     const cipher = crypto.createCipher('aes192', process.env.crypto_secret);
     cipher.update(`${password}`, 'utf8', 'base64');
