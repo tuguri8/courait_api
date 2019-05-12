@@ -51,13 +51,16 @@ function login(req, res) {
 
 async function register(req, res) {
   // const driver = new Builder().forBrowser('chrome').setChromeOptions(new chrome.Options().addArguments('--headless')).build();
+  const { email } = req.body;
+  const { password } = req.body;
+  const { name } = req.body;
+  const { phone } = req.body;
+  const { coupang_id } = req.body;
+  const { coupang_pw } = req.body;
   try {
-    const { email } = req.body;
-    const { password } = req.body;
-    const { name } = req.body;
-    const { phone } = req.body;
-    const { coupang_id } = req.body;
-    const { coupang_pw } = req.body;
+    const cipher = crypto.createCipher('aes192', process.env.crypto_secret);
+    cipher.update(`${password}`, 'utf8', 'base64');
+    const cipheredPassword = cipher.final('base64');
     const userInfo = await models.User.findOne({
       where: {
         email: req.body.email,
@@ -82,16 +85,16 @@ async function register(req, res) {
     // });
     await models.User.create({
       email,
-      password,
+      password: cipheredPassword,
       name,
       phone,
       coupang_id,
       coupang_pw,
     });
-    return res.status(200).json({ success: true });
+    return res.status(200).json({ success: true, message: '회원가입에 성공했습니다.' });
   } catch (e) {
     console.log(e);
-    return res.status(500).json({ success: false });
+    return res.status(500).json({ success: false, message: '회원가입에 실패했습니다.' });
   }
 }
 
