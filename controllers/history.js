@@ -193,7 +193,7 @@ async function getByDay(req, res) {
 
 async function comparePrevMonth(req, res) {
   const { email } = req.decoded;
-  const month = moment().format('M');
+  const { month } = req.query;
   try {
     let prevTotalPrice = 0;
     let nowTotalPrice = 0;
