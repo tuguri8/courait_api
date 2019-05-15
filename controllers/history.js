@@ -368,13 +368,13 @@ async function getByCategory(req, res) {
         totalPrice += data.price;
       });
       return res.status(200).json({
-        success: true, category, price: totalPrice, list,
+        success: true, category, price: totalPrice, category_list: list,
       });
     }
-    return res.status(403).json({ success: false, message: '결과없음' });
+    return res.status(501).json({ success: false, message: '결과없음' });
   } catch (e) {
     console.log(e);
-    return res.status(500).json({ success: false });
+    return res.status(500).json({ success: false, message: 'Server Error' });
   }
 }
 
@@ -402,18 +402,18 @@ async function compareByBudget(req, res) {
     }
     if (monthlyPrice >= budget) {
       return res.status(200).json({
-        over: true, monthlyPrice, budget, diff: monthlyPrice - budget,
+        success: true, over: true, month_price: monthlyPrice, budget, diff_price: monthlyPrice - budget,
       });
     }
     const diff = budget - monthlyPrice;
     const remainDay = (moment().endOf('month').format('D')) - (moment().format('D'));
     const daySpend = Math.floor(diff / remainDay);
     return res.status(200).json({
-      over: false, monthlyPrice, budget, diff, remainDay, daySpend,
+      success: true, over: false, month_price: monthlyPrice, budget, diff_price: diff, rest_day: remainDay, rest_price: daySpend,
     });
   } catch (e) {
     console.log(e);
-    return res.status(500).json({ success: false });
+    return res.status(500).json({ success: false, message: 'Sever Error' });
   }
 }
 
