@@ -156,7 +156,11 @@ async function getByDay(req, res) {
       });
       console.log(purchaseList);
       if (purchaseList.length > 0) {
-        return res.status(200).json({ success: true, list: purchaseList });
+        let totalPrice = 0;
+        purchaseList.forEach((data) => {
+          totalPrice += data.price;
+        });
+        return res.status(200).json({ success: true, day_price: totalPrice, day_list: purchaseList });
       }
       return res.status(403).json({ success: false, message: '결과없음' });
     } catch (err) {
@@ -183,7 +187,11 @@ async function getByDay(req, res) {
       if (list) {
         console.log(list);
         list = list.purchase_lists;
-        return res.status(200).json({ success: true, list });
+        let totalPrice = 0;
+        list.forEach((data) => {
+          totalPrice += data.price;
+        });
+        return res.status(200).json({ success: true, day_price: totalPrice, day_list: list });
       }
       return res.status(403).json({ success: false, message: '결과없음' });
     } catch (e) {
