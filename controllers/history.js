@@ -44,12 +44,14 @@ async function getByMonth(req, res) {
         datePrice[dataDay] += data.price;
         totalPrice += data.price;
       });
-      return res.status(200).json({ monthPrice: totalPrice, dayPrice: datePrice, list });
+      return res.status(200).json({
+        success: true, month_price: totalPrice, day_price: datePrice, month_list: list,
+      });
     }
-    return res.status(403).json({ success: false, message: '결과없음' });
+    return res.status(501).json({ success: false, message: '결과없음' });
   } catch (e) {
     console.log(e);
-    return res.status(500).json({ success: false });
+    return res.status(500).json({ success: false, message: '서버에러' });
   }
 }
 
