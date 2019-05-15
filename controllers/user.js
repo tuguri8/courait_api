@@ -17,7 +17,7 @@ async function updateBudget(req, res) {
     return res.status(200).json({ success: true, email, budget });
   } catch (e) {
     console.log(e);
-    return res.status(500).json({ success: false });
+    return res.status(500).json({ success: false, message: 'Server Erorr' });
   }
 }
 
@@ -30,7 +30,7 @@ async function getBudget(req, res) {
     return res.status(200).json({ success: true, email, budget: userInfo.budget });
   } catch (e) {
     console.log(e);
-    return res.status(500).json({ success: false });
+    return res.status(500).json({ success: false, message: 'Server Erorr' });
   }
 }
 
@@ -51,10 +51,10 @@ async function feedback(req, res) {
       content,
       date: moment().format('YYYY-M-D'),
     });
-    return res.status(200).json({ success: true });
+    return res.status(200).json({ success: true, message: '문의가 접수되었습니다' });
   } catch (e) {
     console.log(e);
-    return res.status(500).json({ success: false });
+    return res.status(500).json({ success: false, message: 'Server Erorr' });
   }
 }
 
@@ -67,7 +67,7 @@ async function withdrawl(req, res) {
     return res.status(200).json({ success: true });
   } catch (e) {
     console.log(e);
-    return res.status(500).json({ success: false });
+    return res.status(500).json({ success: false, message: 'Server Erorr' });
   }
 }
 

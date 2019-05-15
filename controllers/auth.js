@@ -39,13 +39,13 @@ function login(req, res) {
     }
     return res.status(500).json({
       success: false,
-      message: 'email or password incorrect',
+      message: '이메일 혹은 비밀번호가 틀렸습니다.',
     });
   }).catch((err) => {
     console.log(err);
     res.status(500).json({
       success: false,
-      message: 'email or password incorrect',
+      message: '이메일 혹은 비밀번호가 틀렸습니다.',
     });
   });
 }
