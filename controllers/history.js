@@ -266,10 +266,10 @@ async function percentByCategory(req, res) {
       const total = list.length;
       let fashion = 0;
       let fashionPrice = 0;
-      let care = 0;
-      let carePrice = 0;
-      let digit = 0;
-      let digitPrice = 0;
+      let cosmetic = 0;
+      let cosmeticPrice = 0;
+      let digital = 0;
+      let digitalPrice = 0;
       let interior = 0;
       let interiorPrice = 0;
       let kid = 0;
@@ -284,39 +284,39 @@ async function percentByCategory(req, res) {
       let culturePrice = 0;
       list.forEach((data) => {
         switch (data.category) {
-          case '패션':
+          case 'fashion':
             fashion++;
             fashionPrice += data.price;
             break;
-          case '화장품/미용':
-            care++;
-            carePrice += data.price;
+          case 'cosmetic':
+            cosmetic++;
+            cosmeticPrice += data.price;
             break;
-          case '디지털/가전':
-            digit++;
-            digitPrice += data.price;
+          case 'digital':
+            digital++;
+            digitalPrice += data.price;
             break;
-          case '가구/인테리어':
+          case 'interior':
             interior++;
             interiorPrice += data.price;
             break;
-          case '출산/육아':
+          case 'kid':
             kid++;
             kidPrice += data.price;
             break;
-          case '식품':
+          case 'food':
             food++;
             foodPrice += data.price;
             break;
-          case '스포츠/레저':
+          case 'sports':
             sports++;
             sportsPrice += data.price;
             break;
-          case '생활/건강':
+          case 'life':
             life++;
             lifePrice += data.price;
             break;
-          case '여행/문화':
+          case 'culture':
             culture++;
             culturePrice += data.price;
             break;
@@ -327,8 +327,8 @@ async function percentByCategory(req, res) {
       return res.status(200).json({
         success: true,
         fashion: { percent: Math.round(fashion / total * 100), price: fashionPrice },
-        care: { percent: Math.round(care / total * 100), price: carePrice },
-        digit: { percent: Math.round(digit / total * 100), price: digitPrice },
+        care: { percent: Math.round(cosmetic / total * 100), price: cosmeticPrice },
+        digit: { percent: Math.round(digital / total * 100), price: digitalPrice },
         interior: { percent: Math.round(interior / total * 100), price: interiorPrice },
         kid: { percent: Math.round(kid / total * 100), price: kidPrice },
         food: { percent: Math.round(food / total * 100), price: foodPrice },
