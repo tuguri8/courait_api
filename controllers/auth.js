@@ -58,7 +58,7 @@ async function register(req, res) {
   const { phone } = req.body;
   const { coupang_id } = req.body;
   const { coupang_pw } = req.body;
-  if (email === undefined || password === undefined || name === undefined || phone === undefined || coupang_id === undefined || coupang_pw === undefined) {
+  if (email === '' || password === '' || name === '' || phone === '' || coupang_id === '' || coupang_pw === '') {
     return res.status(502).json({ success: false, message: '양식을 다 입력하세요!' });
   }
   try {
