@@ -155,7 +155,7 @@ async function getByDay(req, res) {
         }
       });
       console.log(purchaseList);
-      if (purchaseList) {
+      if (purchaseList.length > 0) {
         return res.status(200).json({ success: true, list: purchaseList });
       }
       return res.status(403).json({ success: false, message: '결과없음' });
