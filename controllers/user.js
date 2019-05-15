@@ -64,7 +64,7 @@ async function withdrawl(req, res) {
     await models.User.destroy({
       where: { email },
     });
-    return res.status(200).json({ success: true });
+    return res.status(200).json({ success: true, message: '회원탈퇴가 완료되었습니다' });
   } catch (e) {
     console.log(e);
     return res.status(500).json({ success: false, message: 'Server Erorr' });

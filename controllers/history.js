@@ -165,7 +165,7 @@ async function getByDay(req, res) {
       return res.status(501).json({ success: false, message: '결과없음' });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ success: false });
+      return res.status(500).json({ success: false, message: 'Server Error' });
     } finally {
       console.log('finish');
       await sleep(1000);
@@ -196,7 +196,7 @@ async function getByDay(req, res) {
       return res.status(501).json({ success: false, message: '결과없음' });
     } catch (e) {
       console.log(e);
-      return res.status(500).json({ success: false });
+      return res.status(500).json({ success: false, message: 'Server Error' });
     }
   }
 }
