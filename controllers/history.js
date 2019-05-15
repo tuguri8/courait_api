@@ -60,7 +60,7 @@ async function getByDay(req, res) {
   const { year } = req.query;
   const { month } = req.query;
   const { day } = req.query;
-  if (day === parseInt(moment().format('D'))) {
+  if (day === (moment().format('D'))) {
     const driver = new Builder().forBrowser('chrome').setChromeOptions(new chrome.Options().addArguments('--headless')).build();
     const purchaseList = [];
     const asyncForEach = async (array, callback) => {
