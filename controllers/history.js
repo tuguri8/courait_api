@@ -162,7 +162,7 @@ async function getByDay(req, res) {
         });
         return res.status(200).json({ success: true, day_price: totalPrice, day_list: purchaseList });
       }
-      return res.status(403).json({ success: false, message: '결과없음' });
+      return res.status(501).json({ success: false, message: '결과없음' });
     } catch (err) {
       console.log(err);
       return res.status(500).json({ success: false });
@@ -193,7 +193,7 @@ async function getByDay(req, res) {
         });
         return res.status(200).json({ success: true, day_price: totalPrice, day_list: list });
       }
-      return res.status(403).json({ success: false, message: '결과없음' });
+      return res.status(501).json({ success: false, message: '결과없음' });
     } catch (e) {
       console.log(e);
       return res.status(500).json({ success: false });
@@ -238,11 +238,11 @@ async function comparePrevMonth(req, res) {
     }
     const diffPrice = nowTotalPrice - prevTotalPrice;
     return res.status(200).json({
-      success: true, prevMonth: prevTotalPrice, nowMonth: nowTotalPrice, price: diffPrice,
+      success: true, prev_price: prevTotalPrice, now_price: nowTotalPrice, diff_price: diffPrice,
     });
   } catch (e) {
     console.log(e);
-    return res.status(500).json({ success: false });
+    return res.status(500).json({ success: false, message: 'Server Error' });
   }
 }
 
@@ -265,64 +265,82 @@ async function percentByCategory(req, res) {
       list = list.purchase_lists;
       const total = list.length;
       let fashion = 0;
+      let fashionPrice = 0;
       let care = 0;
+      let carePrice = 0;
       let digit = 0;
+      let digitPrice = 0;
       let interior = 0;
+      let interiorPrice = 0;
       let kid = 0;
+      let kidPrice = 0;
       let food = 0;
+      let foodPrice = 0;
       let sports = 0;
+      let sportsPrice = 0;
       let life = 0;
+      let lifePrice = 0;
       let culture = 0;
+      let culturePrice = 0;
       list.forEach((data) => {
         switch (data.category) {
           case '패션':
             fashion++;
+            fashionPrice += data.price;
             break;
           case '화장품/미용':
             care++;
+            carePrice += data.price;
             break;
           case '디지털/가전':
             digit++;
+            digitPrice += data.price;
             break;
           case '가구/인테리어':
             interior++;
+            interiorPrice += data.price;
             break;
           case '출산/육아':
             kid++;
+            kidPrice += data.price;
             break;
           case '식품':
             food++;
+            foodPrice += data.price;
             break;
           case '스포츠/레저':
             sports++;
+            sportsPrice += data.price;
             break;
           case '생활/건강':
             life++;
+            lifePrice += data.price;
             break;
           case '여행/문화':
             culture++;
+            culturePrice += data.price;
             break;
           default:
             break;
         }
       });
-      const result = {
-        fashion: Math.round(fashion / total * 100),
-        care: Math.round(care / total * 100),
-        digit: Math.round(digit / total * 100),
-        interior: Math.round(interior / total * 100),
-        kid: Math.round(kid / total * 100),
-        food: Math.round(food / total * 100),
-        sports: Math.round(sports / total * 100),
-        life: Math.round(life / total * 100),
-        culture: Math.round(culture / total * 100),
-      };
-      return res.status(200).json({ success: true, result });
+      return res.status(200).json({
+        success: true,
+        fashion: { percent: Math.round(fashion / total * 100), price: fashionPrice },
+        care: { percent: Math.round(care / total * 100), price: carePrice },
+        digit: { percent: Math.round(digit / total * 100), price: digitPrice },
+        interior: { percent: Math.round(interior / total * 100), price: interiorPrice },
+        kid: { percent: Math.round(kid / total * 100), price: kidPrice },
+        food: { percent: Math.round(food / total * 100), price: foodPrice },
+        sports: { percent: Math.round(sports / total * 100), price: sportsPrice },
+        life: { percent: Math.round(life / total * 100), price: lifePrice },
+        culture: { percent: Math.round(culture / total * 100), price: culturePrice },
+      });
     }
-    return res.status(403).json({ success: false, message: '결과없음' });
+    return res.status(501).json({ success: false, message: '결과없음' });
   } catch (e) {
     console.log(e);
-    return res.status(500).json({ success: false });
+    return res.status(500).json({ success: false, message: 'Server Error' });
   }
 }
 
