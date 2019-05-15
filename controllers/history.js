@@ -421,7 +421,7 @@ async function inputPurchase(req, res) {
   const { email } = req.decoded;
   const { name } = req.body;
   const { price } = req.body;
-  const date = moment().format('YYYY-MM-DD');
+  const { date } = req.body;
   let food_category = null;
   try {
     const options = {
