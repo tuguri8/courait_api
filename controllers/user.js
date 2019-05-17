@@ -1,5 +1,6 @@
 require('dotenv').config();
 const moment = require('moment');
+const crypto = require('crypto');
 const models = require('../models');
 
 async function updateBudget(req, res) {
@@ -60,11 +61,20 @@ async function feedback(req, res) {
 
 async function withdrawl(req, res) {
   const { email } = req.decoded;
+  const { password } = req.body;
+  const { user_password } = req.decoded;
   try {
-    await models.User.destroy({
-      where: { email },
-    });
-    return res.status(200).json({ success: true, message: '회원탈퇴가 완료되었습니다' });
+    const decipher = crypto.createDecipher('aes192', process.env.crypto_secret);
+    decipher.update(user_password, 'base64', 'utf8');
+    const decipheredPassword = decipher.final('utf8');
+    if (password === decipheredPassword) {
+      await models.User.destroy({
+        where: { email },
+      });
+      return res.status(200).json({ success: true, message: '회원탈퇴가 완료되었습니다' });
+    } else {
+      return res.status(501).json({ success: false, message: '비밀번호가 올바르지 않습니다.' });
+    }
   } catch (e) {
     console.log(e);
     return res.status(500).json({ success: false, message: 'Server Erorr' });
