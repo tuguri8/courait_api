@@ -74,7 +74,7 @@ async function getByDay(req, res) {
       },
     });
     try {
-      await driver.executeScript("Object.defineProperty(navigator, 'languages', {get: function() {return ['ko-KR', 'ko']}})");
+      // await driver.executeScript("Object.defineProperty(navigator, 'languages', {get: function() {return ['ko-KR', 'ko']}})");
       let category = null;
       let food_category = null;
       let name = null;
@@ -120,7 +120,7 @@ async function getByDay(req, res) {
                 .text();
               if (date === moment().format('YYYY-M-D')) {
                 purchaseList.push({
-                  name, category, food_category, date, price,
+                  item_name: name, category, food_category, date, price,
                 });
               }
             });
