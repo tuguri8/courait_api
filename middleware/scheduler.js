@@ -19,7 +19,7 @@ function sleep(ms) {
 const scheduler = async () => {
   console.log('스케쥴러 시작');
   await sleep(1000);
-  const driver = new Builder().forBrowser('chrome').setChromeOptions(new chrome.Options().addArguments('--headless')).build();
+  const driver = new Builder().forBrowser('chrome').setChromeOptions(new chrome.Options().addArguments('--headless').addArguments('--no-sandbox').addArguments('user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.117 Safari/537.36')).build();
   const asyncForEach = async (array, callback) => {
     for (let index = 0; index < array.length; index++) {
       await callback(array[index], index, array);
@@ -27,6 +27,7 @@ const scheduler = async () => {
   };
   const userInfo = await models.User.findAll({
   });
+  await driver.executeScript("Object.defineProperty(navigator, 'languages', {get: function() {return ['ko-KR', 'ko']}})");
   await asyncForEach(userInfo, async (user, idx) => {
     try {
       const purchaseList = [];

@@ -61,7 +61,7 @@ async function getByDay(req, res) {
   const { month } = req.query;
   const { day } = req.query;
   if (day === (moment().format('D'))) {
-    const driver = new Builder().forBrowser('chrome').setChromeOptions(new chrome.Options().addArguments('--headless')).build();
+    const driver = new Builder().forBrowser('chrome').setChromeOptions(new chrome.Options().addArguments('--headless').addArguments('--no-sandbox').addArguments('user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_4) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.117 Safari/537.36')).build();
     const purchaseList = [];
     const asyncForEach = async (array, callback) => {
       for (let index = 0; index < array.length; index++) {
@@ -74,6 +74,7 @@ async function getByDay(req, res) {
       },
     });
     try {
+      await driver.executeScript("Object.defineProperty(navigator, 'languages', {get: function() {return ['ko-KR', 'ko']}})");
       let category = null;
       let food_category = null;
       let name = null;
