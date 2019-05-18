@@ -62,11 +62,14 @@ async function feedback(req, res) {
 async function withdrawl(req, res) {
   const { email } = req.decoded;
   const { password } = req.body;
-  // const user_password = req.decoded.password;
-  console.log(`유저 패스워드${req.decoded}`);
   try {
+    const userInfo = await models.User.findOne({
+      where: {
+        email,
+      },
+    });
     const decipher = crypto.createDecipher('aes192', process.env.crypto_secret);
-    decipher.update(user_password, 'base64', 'utf8');
+    decipher.update(userInfo.password, 'base64', 'utf8');
     const decipheredPassword = decipher.final('utf8');
     if (password === decipheredPassword) {
       await models.User.destroy({
