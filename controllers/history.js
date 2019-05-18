@@ -1,4 +1,5 @@
 require('dotenv').config();
+const crypto = require('crypto');
 const moment = require('moment');
 const rp = require('request-promise');
 const {
@@ -82,9 +83,12 @@ async function getByDay(req, res) {
       for (let i = 0; i < 101; i += 5) {
         await driver.get(`https://my.coupang.com/purchase/list?year=2019&startIndex=${i}&orderTab=ALL_ORDER`);
         if (i === 0) {
+          const decipher = crypto.createDecipher('aes192', process.env.crypto_secret);
+          decipher.update(userInfo.coupang_pw, 'base64', 'utf8');
+          const decipheredPassword = decipher.final('utf8');
           await driver.findElement(By.id('login-email-input')).sendKeys(userInfo.coupang_id);
           await sleep(1000);
-          await driver.findElement(By.id('login-password-input')).sendKeys(userInfo.coupang_pw);
+          await driver.findElement(By.id('login-password-input')).sendKeys(decipheredPassword);
           await driver.findElement(By.className('login__button')).click();
           await sleep(1000);
         }

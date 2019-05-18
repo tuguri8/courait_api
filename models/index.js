@@ -43,7 +43,7 @@ const User = sequelize.define('user', {
   name: { type: Sequelize.STRING(10), allowNull: false },
   phone: { type: Sequelize.STRING(20), allowNull: false },
   coupang_id: { type: Sequelize.STRING(30), allowNull: false },
-  coupang_pw: { type: Sequelize.STRING(20), allowNull: false },
+  coupang_pw: { type: Sequelize.STRING(50), allowNull: false },
   budget: { type: Sequelize.INTEGER, allowNull: false, defaultValue: 0 },
 });
 
