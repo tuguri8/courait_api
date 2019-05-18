@@ -328,8 +328,8 @@ async function percentByCategory(req, res) {
       return res.status(200).json({
         success: true,
         fashion: { percent: Math.round(fashion / total * 100), price: fashionPrice },
-        care: { percent: Math.round(cosmetic / total * 100), price: cosmeticPrice },
-        digit: { percent: Math.round(digital / total * 100), price: digitalPrice },
+        cosmetic: { percent: Math.round(cosmetic / total * 100), price: cosmeticPrice },
+        digital: { percent: Math.round(digital / total * 100), price: digitalPrice },
         interior: { percent: Math.round(interior / total * 100), price: interiorPrice },
         kid: { percent: Math.round(kid / total * 100), price: kidPrice },
         food: { percent: Math.round(food / total * 100), price: foodPrice },
