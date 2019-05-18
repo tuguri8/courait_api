@@ -7,6 +7,7 @@ const {
 const chrome = require('selenium-webdriver/chrome');
 const cheerio = require('cheerio');
 const models = require('../models');
+const _ = require('underscore');
 
 function sleep(ms) {
   return new Promise((resolve) => {
@@ -368,6 +369,8 @@ async function getByCategory(req, res) {
       list.forEach((data) => {
         totalPrice += data.price;
       });
+      list = _.sortBy(list, 'purchase_date');
+      list = _.groupBy(list, 'purchase_date');
       return res.status(200).json({
         success: true, category, price: totalPrice, category_list: list,
       });
