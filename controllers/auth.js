@@ -65,6 +65,9 @@ async function register(req, res) {
     const cipher = crypto.createCipher('aes192', process.env.crypto_secret);
     cipher.update(`${password}`, 'utf8', 'base64');
     const cipheredPassword = cipher.final('base64');
+    const cipher2 = crypto.createCipher('aes192', process.env.crypto_secret);
+    cipher2.update(`${coupang_pw}`, 'utf8', 'base64');
+    const cipheredCoupangPassword = cipher2.final('base64');
     const userInfo = await models.User.findOne({
       where: {
         email: req.body.email,
@@ -93,8 +96,19 @@ async function register(req, res) {
       name,
       phone,
       coupang_id,
-      coupang_pw,
+      coupang_pw: cipheredCoupangPassword,
     });
+    await models.Alarm.bulkCreate([
+      { email, food_category: 'fashion', date: null },
+      { email, food_category: 'cosmetic', date: null },
+      { email, food_category: 'digital', date: null },
+      { email, food_category: 'interior', date: null },
+      { email, food_category: 'kid', date: null },
+      { email, food_category: 'food', date: null },
+      { email, food_category: 'sports', date: null },
+      { email, food_category: 'life', date: null },
+      { email, food_category: 'culture', date: null },
+    ]);
     return res.status(200).json({ success: true, message: '회원가입에 성공했습니다.' });
   } catch (e) {
     console.log(e);

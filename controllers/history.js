@@ -413,7 +413,7 @@ async function compareByBudget(req, res) {
     const remainDay = (moment().endOf('month').format('D')) - (moment().format('D'));
     const daySpend = Math.floor(diff / remainDay);
     return res.status(200).json({
-      success: true, over: false, month_price: monthlyPrice, budget, diff_price: diff, rest_day: remainDay, rest_price: daySpend, list,
+      success: true, over: false, month_price: monthlyPrice, budget, diff_price: diff, rest_day: remainDay, rest_price: daySpend,
     });
   } catch (e) {
     console.log(e);

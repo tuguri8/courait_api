@@ -2,6 +2,7 @@ require('dotenv').config();
 const moment = require('moment');
 const rp = require('request-promise');
 const schedule = require('node-schedule');
+const crypto = require('crypto');
 const cheerio = require('cheerio');
 const {
   Builder, By,
@@ -37,9 +38,12 @@ const scheduler = async () => {
       for (let i = 0; i < 51; i += 5) {
         await driver.get(`https://my.coupang.com/purchase/list?year=2019&startIndex=${i}&orderTab=ALL_ORDER`);
         if (i === 0) {
+          const decipher = crypto.createDecipher('aes192', process.env.crypto_secret);
+          decipher.update(user.coupang_pw, 'base64', 'utf8');
+          const decipheredPassword = decipher.final('utf8');
           await driver.findElement(By.id('login-email-input')).sendKeys(user.coupang_id);
           await sleep(500);
-          await driver.findElement(By.id('login-password-input')).sendKeys(user.coupang_pw);
+          await driver.findElement(By.id('login-password-input')).sendKeys(decipheredPassword);
           await driver.findElement(By.className('login__button')).click();
           await sleep(500);
         }
