@@ -3,7 +3,7 @@
 /**
  * Module dependencies.
  */
-
+require('dotenv').config();
 var app = require('../app');
 var debug = require('debug')('shopping-api:server');
 var http = require('http');
@@ -13,7 +13,7 @@ const syncDatabase = require('../database');
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || '7001');
+var port = normalizePort(process.env.server_port);
 app.set('port', port);
 
 /**
