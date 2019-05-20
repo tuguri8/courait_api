@@ -332,31 +332,40 @@ async function percentByCategory(req, res) {
       });
       let dataArr = [{
         name: 'fashion',
-        percent: res.fashion.percent,
+        percent: Math.round(fashion / total * 100),
+        price: fashionPrice,
       }, {
         name: 'cosmetic',
-        percent: res.cosmetic.percent,
+        percent: Math.round(cosmetic / total * 100),
+        price: cosmeticPrice,
       }, {
         name: 'digital',
-        percent: res.digital.percent,
+        percent: Math.round(digital / total * 100),
+        price: digitalPrice,
       }, {
         name: 'interior',
-        percent: res.interior.percent,
+        percent: Math.round(interior / total * 100),
+        price: interiorPrice,
       }, {
         name: 'kid',
-        percent: res.kid.percent,
+        percent: Math.round(kid / total * 100),
+        price: kidPrice,
       }, {
         name: 'food',
-        percent: res.food.percent,
+        percent: Math.round(food / total * 100),
+        price: foodPrice,
       }, {
         name: 'sports',
-        percent: res.sports.percent,
+        percent: Math.round(sports / total * 100),
+        price: sportsPrice,
       }, {
         name: 'life',
-        percent: res.life.percent,
+        percent: Math.round(life / total * 100),
+        price: lifePrice,
       }, {
         name: 'culture',
-        percent: res.culture.percent,
+        percent: Math.round(culture / total * 100),
+        price: culturePrice,
       }];
       dataArr = _.sortBy(dataArr, 'percent').reverse();
       dataArr.forEach((data2, idx) => {
@@ -369,8 +378,9 @@ async function percentByCategory(req, res) {
       const result = { success: true };
       dataArr.forEach((data3) => {
         result[data3.name] = {
-          percent: data3.percent,
           rank: data3.rank,
+          percent: data3.percent,
+          price: data3.price,
         };
       });
       return res.status(200).json(result);
