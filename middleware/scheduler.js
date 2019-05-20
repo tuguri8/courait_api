@@ -95,7 +95,7 @@ const scheduler = async () => {
       await asyncForEach(purchaseList, async (data, idx2) => {
         const options = {
           method: 'POST',
-          uri: 'http://ec2-13-124-76-148.ap-northeast-2.compute.amazonaws.com:8000/categorize/',
+          uri: `${process.env.nlp_url}/categorize/`,
           body: {
             content: data.name,
           },
@@ -107,7 +107,7 @@ const scheduler = async () => {
         if (category === 'food') {
           const options2 = {
             method: 'POST',
-            uri: 'http://ec2-13-124-76-148.ap-northeast-2.compute.amazonaws.com:8000/food_categorize/',
+            uri: `${process.env.nlp_url}/food_categorize/`,
             body: {
               content: data.name,
             },

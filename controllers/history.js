@@ -137,7 +137,7 @@ async function getByDay(req, res) {
       await asyncForEach(purchaseList, async (data, idx) => {
         const options = {
           method: 'POST',
-          uri: 'http://ec2-13-124-76-148.ap-northeast-2.compute.amazonaws.com:8000/categorize/',
+          uri: `${process.env.nlp_url}/categorize/`,
           body: {
             content: name,
           },
@@ -149,7 +149,7 @@ async function getByDay(req, res) {
         if (category === 'food') {
           const options2 = {
             method: 'POST',
-            uri: 'http://ec2-13-124-76-148.ap-northeast-2.compute.amazonaws.com:8000/food_categorize/',
+            uri: `${process.env.nlp_url}/food_categorize/`,
             body: {
               content: name,
             },
@@ -434,7 +434,7 @@ async function inputPurchase(req, res) {
   try {
     const options = {
       method: 'POST',
-      uri: 'http://ec2-13-124-76-148.ap-northeast-2.compute.amazonaws.com:8000/categorize/',
+      uri: `${process.env.nlp_url}/categorize/`,
       body: {
         content: name,
       },
@@ -445,7 +445,7 @@ async function inputPurchase(req, res) {
     if (category === 'food') {
       const options2 = {
         method: 'POST',
-        uri: 'http://ec2-13-124-76-148.ap-northeast-2.compute.amazonaws.com:8000/food_categorize/',
+        uri: `${process.env.nlp_url}/food_categorize/`,
         body: {
           content: name,
         },
