@@ -330,18 +330,62 @@ async function percentByCategory(req, res) {
             break;
         }
       });
-      return res.status(200).json({
-        success: true,
-        fashion: { percent: Math.round(fashion / total * 100), price: fashionPrice },
-        cosmetic: { percent: Math.round(cosmetic / total * 100), price: cosmeticPrice },
-        digital: { percent: Math.round(digital / total * 100), price: digitalPrice },
-        interior: { percent: Math.round(interior / total * 100), price: interiorPrice },
-        kid: { percent: Math.round(kid / total * 100), price: kidPrice },
-        food: { percent: Math.round(food / total * 100), price: foodPrice },
-        sports: { percent: Math.round(sports / total * 100), price: sportsPrice },
-        life: { percent: Math.round(life / total * 100), price: lifePrice },
-        culture: { percent: Math.round(culture / total * 100), price: culturePrice },
+      let dataArr = [{
+        name: 'fashion',
+        percent: res.fashion.percent,
+      }, {
+        name: 'cosmetic',
+        percent: res.cosmetic.percent,
+      }, {
+        name: 'digital',
+        percent: res.digital.percent,
+      }, {
+        name: 'interior',
+        percent: res.interior.percent,
+      }, {
+        name: 'kid',
+        percent: res.kid.percent,
+      }, {
+        name: 'food',
+        percent: res.food.percent,
+      }, {
+        name: 'sports',
+        percent: res.sports.percent,
+      }, {
+        name: 'life',
+        percent: res.life.percent,
+      }, {
+        name: 'culture',
+        percent: res.culture.percent,
+      }];
+      dataArr = _.sortBy(dataArr, 'percent').reverse();
+      dataArr.forEach((data2, idx) => {
+        if (data2.percent === 0) {
+          data2.rank = 0;
+        } else {
+          data2.rank = idx + 1;
+        }
       });
+      const result = { success: true };
+      dataArr.forEach((data3) => {
+        result[data3.name] = {
+          percent: data3.percent,
+          rank: data3.rank,
+        };
+      });
+      return res.status(200).json(result);
+      // return res.status(200).json({
+      //   success: true,
+      //   fashion: { percent: Math.round(fashion / total * 100), price: fashionPrice },
+      //   cosmetic: { percent: Math.round(cosmetic / total * 100), price: cosmeticPrice },
+      //   digital: { percent: Math.round(digital / total * 100), price: digitalPrice },
+      //   interior: { percent: Math.round(interior / total * 100), price: interiorPrice },
+      //   kid: { percent: Math.round(kid / total * 100), price: kidPrice },
+      //   food: { percent: Math.round(food / total * 100), price: foodPrice },
+      //   sports: { percent: Math.round(sports / total * 100), price: sportsPrice },
+      //   life: { percent: Math.round(life / total * 100), price: lifePrice },
+      //   culture: { percent: Math.round(culture / total * 100), price: culturePrice },
+      // });
     }
     return res.status(501).json({ success: false, message: '결과없음' });
   } catch (e) {
