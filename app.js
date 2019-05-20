@@ -16,7 +16,7 @@ schedule.scheduleJob('30 13 * * *', async () => {
 });
 // CORS 설정
 const corsOptions = {
-  origin: ['http://localhost:3000', 'http://ec2-13-124-76-148.ap-northeast-2.compute.amazonaws.com:7002'],
+  origin: ['http://localhost:3000', 'http://ec2-13-124-76-148.ap-northeast-2.compute.amazonaws.com:7002', 'http://192.9.44.53:65012', 'http://203.249.127.32:65012'],
   credentials: true,
 };
 app.use(cors(corsOptions));
