@@ -370,7 +370,7 @@ async function percentByCategory(req, res) {
       dataArr = _.sortBy(dataArr, 'percent').reverse();
       dataArr.forEach((data2, idx) => {
         if (data2.percent === 0) {
-          data2.rank = 0;
+          data2.rank = 9;
         } else {
           data2.rank = idx + 1;
         }
