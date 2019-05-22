@@ -429,8 +429,12 @@ async function getByCategory(req, res) {
       });
       list = _.sortBy(list, 'purchase_date');
       list = _.groupBy(list, 'purchase_date');
+      const newList = {};
+      for (let i = 0; i < Object.keys(list).length; i++) {
+        newList[moment(Object.keys(list)[i]).format('D')] = list[Object.keys(list)[i]];
+      }
       return res.status(200).json({
-        success: true, category, price: totalPrice, category_list: list,
+        success: true, category, price: totalPrice, category_list: list, category_list_mobile: newList,
       });
     }
     return res.status(501).json({ success: false, message: '결과없음' });
