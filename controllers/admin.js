@@ -142,7 +142,7 @@ async function newAdmin(req, res) {
       },
     });
     if (adminInfo) {
-      res.status(500).json({
+      return res.status(500).json({
         success: false,
         message: '이미 관리자로 등록되어있습니다.',
       });
