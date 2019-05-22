@@ -136,13 +136,24 @@ async function newAdmin(req, res) {
         message: 'no User',
       });
     }
+    const adminInfo = await models.Admin.findOne({
+      where: {
+        email,
+      },
+    });
+    if (adminInfo) {
+      res.status(500).json({
+        success: false,
+        message: '이미 관리자로 등록되어있습니다.',
+      });
+    }
     await models.Admin.create({
       email,
       password: userInfo.password,
       name: userInfo.name,
       phone: userInfo.phone,
     });
-    return res.status(200).json({ success: true });
+    return res.status(200).json({ success: true, message: '관리자 등록이 완료되었습니다.' });
   } catch (e) {
     console.log(e);
     return res.status(500).json(
@@ -159,7 +170,7 @@ async function sendMail(req, res) {
   const { content } = req.body;
   try {
     await mailer(email, '안녕하세요 쿠레이트 입니다.', content);
-    res.status(200).json({ success: true });
+    res.status(200).json({ success: true, message: '메일이 성공적으로 전송되었습니다.' });
   } catch (e) {
     console.log(e);
     res.status(500).json({
