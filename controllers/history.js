@@ -460,6 +460,7 @@ async function compareByBudget(req, res) {
     });
     const { budget } = userInfo;
     let list = await models.User.findOne({
+      where: { email },
       include: [{
         model: models.Purchase_list,
         where: models.sequelize.where(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), parseInt(month)),
