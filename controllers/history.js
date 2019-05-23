@@ -224,6 +224,9 @@ async function comparePrevMonth(req, res) {
       }],
     });
     let prev_list = await models.User.findOne({
+      where: {
+        email,
+      },
       include: [{
         model: models.Purchase_list,
         where: models.sequelize.where(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), moment(month, 'M').subtract(1, 'months').format('M')),
