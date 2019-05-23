@@ -180,6 +180,9 @@ async function getByDay(req, res) {
   } else {
     try {
       let list = await models.User.findOne({
+        where: {
+          email,
+        },
         include: [{
           model: models.Purchase_list,
           where: models.sequelize.and(
