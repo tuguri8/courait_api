@@ -186,10 +186,63 @@ async function deleteUserInfo(req, res) {
     await models.User.destroy({
       where: { email },
     });
-    return res.status(200).json({ success: true });
+    await models.Alarm.destroy({
+      where: { email },
+    });
+    return res.status(200).json({ success: true, message: '회원 정보가 정상적으로 삭제되었습니다.' });
   } catch (e) {
     console.log(e);
-    return res.status(500).json({ success: false });
+    return res.status(500).json({ success: false, message: 'Server Error' });
+  }
+}
+
+async function updateCrawlerStatus(req, res) {
+  const { status } = req.body;
+  try {
+    await models.Crawler.update(
+      {
+        status,
+      },
+      {
+        where: { id: 1 },
+      },
+    );
+    return res.status(200).json({ success: true, message: '크롤러의 상태가 업데이트되었습니다.' });
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({ success: false, message: 'Server Error' });
+  }
+}
+
+async function updateCrawlerDay(req, res) {
+  const { day } = req.body;
+  try {
+    await models.Crawler.update(
+      {
+        day,
+      },
+      {
+        where: { id: 1 },
+      },
+    );
+    return res.status(200).json({ success: true, message: '크롤러의 주기가 업데이트되었습니다.' });
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({ success: false, message: 'Server Error' });
+  }
+}
+
+async function getCrawlerStatus(req, res) {
+  try {
+    const crawlerInfo = await models.Crawler.findOne({
+      where: {
+        id: 1,
+      },
+    });
+    return res.status(200).json({ success: true, status: crawlerInfo.status, day: crawlerInfo.day });
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({ success: false, message: 'Server Error' });
   }
 }
 
@@ -202,4 +255,7 @@ module.exports = {
   newAdmin,
   sendMail,
   deleteUserInfo,
+  updateCrawlerStatus,
+  updateCrawlerDay,
+  getCrawlerStatus,
 };

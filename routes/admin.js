@@ -13,5 +13,8 @@ router.get('/history', controller.admin.getUserHistory);
 router.post('/new', controller.admin.newAdmin);
 router.post('/mail', controller.admin.sendMail);
 router.delete('/user/info', controller.admin.deleteUserInfo);
+router.post('/crawler/status', controller.admin.updateCrawlerStatus);
+router.post('/crawler/day', controller.admin.updateCrawlerDay);
+router.get('/crawler/status', controller.admin.getCrawlerStatus);
 
 module.exports = router;
