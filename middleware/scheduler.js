@@ -1,7 +1,6 @@
 require('dotenv').config();
 const moment = require('moment');
 const rp = require('request-promise');
-const schedule = require('node-schedule');
 const crypto = require('crypto');
 const cheerio = require('cheerio');
 const {
@@ -148,6 +147,7 @@ const scheduler = async () => {
               });
               const dateSum = diffArr.reduce((acc, cur) => acc + cur);
               diffDate = Math.round(dateSum / diffArr.length);
+              if (diffDate === 0) diffDate = 1;
               await models.User.update(
                 {
                   date: moment().add(diffDate, 'd').format('YYYY-MM-DD'),
