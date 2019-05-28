@@ -606,8 +606,7 @@ async function inputPurchase(req, res) {
         if (diffDate === 0) diffDate = 1;
         await models.Alarm.update(
           {
-            // date: moment().add(diffDate, 'd').format('YYYY-MM-DD'),
-            date: '2019-05-28',
+            date: moment().add(diffDate, 'd').format('YYYY-MM-DD'),
           },
           {
             where: {
