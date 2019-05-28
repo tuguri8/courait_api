@@ -99,15 +99,17 @@ async function register(req, res) {
       coupang_pw: cipheredCoupangPassword,
     });
     await models.Alarm.bulkCreate([
-      { email, food_category: 'fashion', date: null },
-      { email, food_category: 'cosmetic', date: null },
-      { email, food_category: 'digital', date: null },
-      { email, food_category: 'interior', date: null },
-      { email, food_category: 'kid', date: null },
-      { email, food_category: 'food', date: null },
-      { email, food_category: 'sports', date: null },
-      { email, food_category: 'life', date: null },
-      { email, food_category: 'culture', date: null },
+      { email, food_category: 'meat', date: null },
+      { email, food_category: 'fish', date: null },
+      { email, food_category: 'agriculture', date: null },
+      { email, food_category: 'banchan', date: null },
+      { email, food_category: 'kimchi', date: null },
+      { email, food_category: 'snack', date: null },
+      { email, food_category: 'beverage', date: null },
+      { email, food_category: 'icecream', date: null },
+      { email, food_category: 'frozen', date: null },
+      { email, food_category: 'gagong', date: null },
+      { email, food_category: 'health', date: null },
     ]);
     return res.status(200).json({ success: true, message: '회원가입에 성공했습니다.' });
   } catch (e) {
