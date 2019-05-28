@@ -1,11 +1,10 @@
 require('dotenv').config();
 const AWS = require('aws-sdk');
 
-AWS.config.loadFromPath('./awscreds.json');
-AWS.config.update({ region: 'us-west-2' });
-
 const sendMail = async (addr, title, text) => {
   return new Promise(((resolve, reject) => {
+    AWS.config.loadFromPath('./awscreds.json');
+    AWS.config.update({ region: 'us-west-2' });
     const params = {
       Destination: { /* required */
         CcAddresses: [
