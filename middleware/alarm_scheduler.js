@@ -50,19 +50,22 @@ const alarm_scheduler = async () => {
       },
       include: [{
         model: models.Purchase_list,
+        order: [
+          [models.Purchase_list, 'id', 'DESC'],
+        ],
         required: true,
       }],
     });
     const purchase_list = userInfo.purchase_lists;
     const userCategory = getFoodCategory(data.food_category);
-    const bodyString = `${userInfo.name} 님! ${userCategory}를(을) 사야 할 날짜에요!\n\n최근에 구매하신 ${userCategory}를(을) 보여드릴게요!\n\n`;
+    const bodyString = `${userInfo.name} 님! ${userCategory}를(을) 구매할 날짜에요!\n\n최근에 구매하신 ${userCategory}를(을) 보여드릴게요!\n\n`;
     let itemString = '';
     purchase_list.forEach((purchase_data, purchase_idx) => {
       if (purchase_idx < 5) {
         itemString += `${purchase_data.item_name}\n`;
       }
     });
-    await mailer(data.email, `${userInfo.name} 님! ${userCategory}를(을) 사야 할 날짜에요!`, bodyString + itemString);
+    await mailer(data.email, `${userInfo.name} 님! ${userCategory}를(을) 구매할 날짜에요!`, bodyString + itemString);
   });
 };
 
