@@ -148,7 +148,7 @@ const scheduler = async () => {
               const dateSum = diffArr.reduce((acc, cur) => acc + cur);
               diffDate = Math.round(dateSum / diffArr.length);
               if (diffDate === 0) diffDate = 1;
-              await models.User.update(
+              await models.Alarm.update(
                 {
                   date: moment().add(diffDate, 'd').format('YYYY-MM-DD'),
                 },
