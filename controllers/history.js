@@ -772,8 +772,9 @@ async function getExcel(req, res) {
           });
         });
       });
+    } else {
+      return res.status(501).json({ success: false, message: '결과없음' });
     }
-    return res.status(501).json({ success: false, message: '결과없음' });
   } catch (e) {
     console.log(e);
     return res.status(500).json({ success: false, message: '서버에러' });
