@@ -11,6 +11,7 @@ const _ = require('underscore');
 const xl = require('excel4node');
 const AWS = require('aws-sdk');
 const models = require('../models');
+const mailer = require('../middleware/mail');
 
 AWS.config.loadFromPath('./awscreds.json');
 
@@ -782,6 +783,223 @@ async function getExcel(req, res) {
   }
 }
 
+async function getExcelMobile(req, res) {
+  const { email } = req.decoded;
+  const { year } = req.query;
+  const { month } = req.query;
+  try {
+    let list = await models.User.findOne({
+      where: {
+        email,
+      },
+      include: [{
+        model: models.Purchase_list,
+        where: models.sequelize.and(
+          (models.sequelize.where(models.sequelize.fn('YEAR', models.sequelize.col('purchase_date')), year)),
+          (models.sequelize.where(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month)),
+        ),
+        required: true,
+      }],
+    });
+    if (list) {
+      console.log(list);
+      const userName = list.name;
+      list = list.purchase_lists;
+      list.forEach((data) => {
+        data.category = getCategory(data.category);
+        data.food_category = getFoodCategory(data.food_category);
+      });
+      const s3 = new AWS.S3();
+      const wb1 = new xl.Workbook();
+      const ws = wb1.addWorksheet('sheet1');
+      const myStyle = wb1.createStyle({
+        font: {
+          bold: true,
+          underline: true,
+          size: 18,
+        },
+        alignment: {
+          wrapText: true,
+          horizontal: 'center',
+        },
+        border: {
+          left: {
+            style: 'thin',
+            color: 'black',
+          },
+          right: {
+            style: 'thin',
+            color: 'black',
+          },
+          top: {
+            style: 'thin',
+            color: 'black',
+          },
+          bottom: {
+            style: 'thin',
+            color: 'black',
+          },
+          outline: false,
+        },
+      });
+
+      const basicStyle = wb1.createStyle({
+        font: {
+          size: 16,
+        },
+        border: {
+          left: {
+            style: 'thin',
+            color: 'black',
+          },
+          right: {
+            style: 'thin',
+            color: 'black',
+          },
+          top: {
+            style: 'thin',
+            color: 'black',
+          },
+          bottom: {
+            style: 'thin',
+            color: 'black',
+          },
+          outline: false,
+        },
+      });
+
+      const currencyStyle = wb1.createStyle({
+        font: {
+          size: 16,
+        },
+        border: {
+          left: {
+            style: 'thin',
+            color: 'black',
+          },
+          right: {
+            style: 'thin',
+            color: 'black',
+          },
+          top: {
+            style: 'thin',
+            color: 'black',
+          },
+          bottom: {
+            style: 'thin',
+            color: 'black',
+          },
+          outline: false,
+        },
+        numberFormat: '₩#,##0; (₩#,##0); -',
+      });
+
+      ws.cell(1, 1, 1, 5, true).string(`${userName}님의 ${month}월 지출내역`).style(myStyle);
+      ws.column(1).setWidth(15);
+      ws.column(2).setWidth(50);
+      ws.column(3).setWidth(15);
+      ws.column(4).setWidth(19);
+      ws.column(5).setWidth(19);
+      ws.column(7).setWidth(15);
+      ws.column(8).setWidth(15);
+      ws.cell(2, 1).string('구매날짜').style(basicStyle);
+      ws.cell(2, 2).string('상품명').style(basicStyle);
+      ws.cell(2, 3).string('가격').style(basicStyle);
+      ws.cell(2, 4).string('분류').style(basicStyle);
+      ws.cell(2, 5).string('식품 상세 분류').style(basicStyle);
+      ws.cell(1, 7, 1, 8, true).string('분류별/총 금액').style(myStyle);
+      ws.cell(2, 7).string('분류').style(basicStyle);
+      ws.cell(2, 8).string('금액').style(basicStyle);
+      ws.cell(3, 7).string('패션').style(basicStyle);
+      ws.cell(3, 8).formula('SUMIF(D3:D999,G3,C3:C999)').style(currencyStyle);
+      ws.cell(4, 7).string('화장품/미용').style(basicStyle);
+      ws.cell(4, 8).formula('SUMIF(D3:D999,G4,C3:C999)').style(currencyStyle);
+      ws.cell(5, 7).string('디지털/가전').style(basicStyle);
+      ws.cell(5, 8).formula('SUMIF(D3:D999,G5,C3:C999)').style(currencyStyle);
+      ws.cell(6, 7).string('가구/인테리어').style(basicStyle);
+      ws.cell(6, 8).formula('SUMIF(D3:D999,G6,C3:C999)').style(currencyStyle);
+      ws.cell(7, 7).string('출산/육아').style(basicStyle);
+      ws.cell(7, 8).formula('SUMIF(D3:D999,G7,C3:C999)').style(currencyStyle);
+      ws.cell(8, 7).string('식품').style(basicStyle);
+      ws.cell(8, 8).formula('SUMIF(D3:D999,G8,C3:C999)').style(currencyStyle);
+      ws.cell(9, 7).string('스포츠/레저').style(basicStyle);
+      ws.cell(9, 8).formula('SUMIF(D3:D999,G9,C3:C999)').style(currencyStyle);
+      ws.cell(10, 7).string('생활/건강').style(basicStyle);
+      ws.cell(10, 8).formula('SUMIF(D3:D999,G10,C3:C999)').style(currencyStyle);
+      ws.cell(11, 7).string('여행/문화').style(basicStyle);
+      ws.cell(11, 8).formula('SUMIF(D3:D999,G11,C3:C999)').style(currencyStyle);
+      ws.cell(12, 7).string('총 금액').style(basicStyle);
+      ws.cell(12, 8).formula('SUM(C3:C999)').style(currencyStyle);
+      list.forEach((data, idx) => {
+        ws.cell(idx + 3, 1).string(data.purchase_date).style(basicStyle);
+        ws.cell(idx + 3, 2).string(data.item_name).style(basicStyle);
+        ws.cell(idx + 3, 3).number(data.price).style(currencyStyle);
+        ws.cell(idx + 3, 4).string(data.category).style(basicStyle);
+        ws.cell(idx + 3, 5).string(data.food_category).style(basicStyle);
+      });
+
+      function s3Upload(s3params) {
+        return new Promise(((resolve, reject) => {
+          s3.upload(s3params, (err, data) => {
+            if (err) {
+              reject(err.message);
+            }
+            console.log(data.Location);
+            models.Excel.create({
+              email,
+              url: data.Location,
+              date: moment().format('YYYY-MM-DD'),
+            }).then(() => resolve(data.Location)).catch((inputErr) => {
+              reject(inputErr);
+            });
+          });
+        }));
+      }
+
+      const buffer = await wb1.writeToBuffer();
+      const s3params = {
+        Body: buffer,
+        Bucket: 'courait',
+        Key: `${email.split('@')[0]}${moment().format('x')}.xlsx`,
+        ACL: 'public-read',
+      };
+      const url = await s3Upload(s3params);
+      await mailer(email, `${userName} 님의 ${month}월 지출내역 엑셀 파일 입니다`, url);
+      res.status(200).json({ success: true });
+
+      // wb1.writeToBuffer().then((buffer) => {
+      //   const s3params = {
+      //     Body: buffer,
+      //     Bucket: 'courait',
+      //     Key: `${email.split('@')[0]}${moment().format('x')}.xlsx`,
+      //     ACL: 'public-read',
+      //   };
+      //
+      //   s3.upload(s3params, (err, data) => {
+      //     if (err) {
+      //       console.log(err.message);
+      //       return res.status(500).json({ success: false, message: '서버에러' });
+      //     }
+      //     console.log(data.Location);
+      //     models.Excel.create({
+      //       email,
+      //       url: data.Location,
+      //       date: moment().format('YYYY-MM-DD'),
+      //     }).then(() => res.status(200).json({ success: true, url: data.Location })).catch((inputErr) => {
+      //       console.log(inputErr);
+      //       return res.status(500).json({ success: false, message: '서버에러' });
+      //     });
+      //   });
+      // });
+    } else {
+      return res.status(501).json({ success: false, message: '결과없음' });
+    }
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({ success: false, message: '서버에러' });
+  }
+}
+
 module.exports = {
   getByMonth,
   getByDay,
@@ -791,4 +1009,5 @@ module.exports = {
   compareByBudget,
   inputPurchase,
   getExcel,
+  getExcelMobile,
 };

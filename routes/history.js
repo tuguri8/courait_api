@@ -10,7 +10,8 @@ router.get('/day', controller.history.getByDay);
 router.get('/prev', controller.history.comparePrevMonth);
 router.get('/category', controller.history.getByCategory);
 router.get('/percent', controller.history.percentByCategory);
-router.get('/excel', controller.history.getExcel); // TODO
+router.get('/excel', controller.history.getExcel);
+router.get('/excelmobile', controller.history.getExcelMobile);
 router.get('/budget', controller.history.compareByBudget);
 router.post('/new', controller.history.inputPurchase);
 
