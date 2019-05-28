@@ -64,7 +64,7 @@ function getFoodCategory(category) {
     case 'health':
       return '건강식품';
     default:
-      return '';
+      return '-';
   }
 }
 
@@ -742,7 +742,7 @@ async function getExcel(req, res) {
       ws.cell(12, 7).string('총 금액').style(basicStyle);
       ws.cell(12, 8).formula('SUM(C3:C999)').style(currencyStyle);
       list.forEach((data, idx) => {
-        ws.cell(idx + 3, 1).string(data.date).style(basicStyle);
+        ws.cell(idx + 3, 1).string(data.purchase_date).style(basicStyle);
         ws.cell(idx + 3, 2).string(data.item_name).style(basicStyle);
         ws.cell(idx + 3, 3).number(data.price).style(currencyStyle);
         ws.cell(idx + 3, 4).string(data.category).style(basicStyle);
