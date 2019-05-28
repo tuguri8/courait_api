@@ -86,6 +86,11 @@ const Admin = sequelize.define('admin', {
   phone: { type: Sequelize.STRING(20), allowNull: false },
 });
 
+const Crawler = sequelize.define('crawler', {
+  status: { type: Sequelize.BOOLEAN, allowNull: false },
+  day: { type: Sequelize.STRING(30), allowNull: false },
+});
+
 User.hasMany(Purchase_list, { foreignKey: 'email' });
 User.hasMany(Excel, { foreignKey: 'email' });
 User.hasMany(Feedback, { foreignKey: 'email' });
@@ -100,4 +105,5 @@ module.exports = {
   Feedback,
   Alarm,
   Admin,
+  Crawler,
 };

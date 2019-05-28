@@ -75,6 +75,9 @@ async function withdrawl(req, res) {
       await models.User.destroy({
         where: { email },
       });
+      await models.Alarm.destroy({
+        where: { email },
+      });
       return res.status(200).json({ success: true, message: '회원탈퇴가 완료되었습니다' });
     } else {
       return res.status(501).json({ success: false, message: '비밀번호가 올바르지 않습니다.' });

@@ -51,7 +51,7 @@ const alarm_scheduler = async () => {
       include: [{
         model: models.Purchase_list,
         order: [
-          [models.Purchase_list, 'purchase_date', 'DESC'],
+          [models.Purchase_list, 'purchase_date', 'ASC'],
         ],
         where: { food_category: data.food_category },
         required: true,
