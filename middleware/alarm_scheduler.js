@@ -48,16 +48,16 @@ const alarm_scheduler = async () => {
       where: {
         email: data.email,
       },
-      include: [{
-        model: models.Purchase_list,
-        order: [
-          [models.Purchase_list, 'purchase_date', 'ASC'],
-        ],
-        where: { food_category: data.food_category },
-        required: true,
-      }],
     });
-    const purchase_list = userInfo.purchase_lists;
+    const purchase_list = await models.Purchase_list.findAll({
+      where: {
+        email: userInfo.email,
+        food_category: data.food_category,
+        order: [
+          ['id', 'DESC'],
+        ],
+      },
+    });
     const userCategory = getFoodCategory(data.food_category);
     const bodyString = `${userInfo.name} 님! ${userCategory}를(을) 구매할 날짜에요!\n\n최근에 구매하신 ${userCategory}를(을) 보여드릴게요!\n\n`;
     let itemString = '';
