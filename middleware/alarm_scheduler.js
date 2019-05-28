@@ -53,10 +53,10 @@ const alarm_scheduler = async () => {
       where: {
         email: userInfo.email,
         food_category: data.food_category,
-        order: [
-          ['id', 'DESC'],
-        ],
       },
+      order: [
+        ['id', 'DESC'],
+      ],
     });
     const userCategory = getFoodCategory(data.food_category);
     const bodyString = `${userInfo.name} 님! ${userCategory}를(을) 구매할 날짜에요!\n\n최근에 구매하신 ${userCategory}를(을) 보여드릴게요!\n\n`;

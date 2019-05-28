@@ -15,7 +15,7 @@ const alarm_scheduler = require('./middleware/alarm_scheduler');
 schedule.scheduleJob('30 13 * * *', async () => {
   scheduler();
 });
-schedule.scheduleJob('11 1 * * *', async () => {
+schedule.scheduleJob('14 1 * * *', async () => {
   alarm_scheduler();
 });
 // CORS 설정
