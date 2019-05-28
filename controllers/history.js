@@ -596,6 +596,7 @@ async function inputPurchase(req, res) {
 
 async function getExcel(req, res) {
   const { email } = req.decoded;
+  const { year } = req.query;
   const { month } = req.query;
   try {
     let list = await models.User.findOne({
@@ -605,7 +606,7 @@ async function getExcel(req, res) {
       include: [{
         model: models.Purchase_list,
         where: models.sequelize.and(
-          (models.sequelize.where(models.sequelize.fn('YEAR', models.sequelize.col('purchase_date')), 2019)),
+          (models.sequelize.where(models.sequelize.fn('YEAR', models.sequelize.col('purchase_date')), year)),
           (models.sequelize.where(models.sequelize.fn('MONTH', models.sequelize.col('purchase_date')), month)),
         ),
         required: true,
