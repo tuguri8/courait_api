@@ -586,6 +586,36 @@ async function inputPurchase(req, res) {
       food_category,
       purchase_date: date,
     });
+    if (category === 'food') {
+      const list = await models.Purchase_list.findAll({
+        where: {
+          email,
+          food_category,
+        },
+      });
+      const diffArr = [];
+      let diffDate;
+      if (list.length > 1) {
+        list.forEach((data, idx) => {
+          if (idx < list.length - 1) {
+            diffArr.push(moment(list[idx + 1].purchase_date).diff(moment(data.purchase_date), 'days'));
+          }
+        });
+        const dateSum = diffArr.reduce((acc, cur) => acc + cur);
+        diffDate = Math.round(dateSum / diffArr.length);
+        await models.User.update(
+          {
+            date: moment().add(diffDate, 'd').format('YYYY-MM-DD'),
+          },
+          {
+            where: {
+              email,
+              food_category,
+            },
+          },
+        );
+      }
+    }
     return res.status(200).json({
       success: true, email, item_name: name, price, category, food_category,
     });

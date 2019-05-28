@@ -130,6 +130,38 @@ const scheduler = async () => {
             price: item_data.price,
             purchase_date: new Date(item_data.date),
           });
+          // 구매알림 측정 시작
+          if (item_data.category === 'food') {
+            const list = await models.Purchase_list.findAll({
+              where: {
+                email: user.email,
+                food_category: item_data.food_category,
+              },
+            });
+            const diffArr = [];
+            let diffDate;
+            if (list.length > 1) {
+              list.forEach((data, idx) => {
+                if (idx < list.length - 1) {
+                  diffArr.push(moment(list[idx + 1].purchase_date).diff(moment(data.purchase_date), 'days'));
+                }
+              });
+              const dateSum = diffArr.reduce((acc, cur) => acc + cur);
+              diffDate = Math.round(dateSum / diffArr.length);
+              await models.User.update(
+                {
+                  date: moment().add(diffDate, 'd').format('YYYY-MM-DD'),
+                },
+                {
+                  where: {
+                    email: user.email,
+                    food_category: item_data.food_category,
+                  },
+                },
+              );
+            }
+          }
+          // 구매알림 측정 끝
         });
         // return { success: true, list: purchaseList };
       }
