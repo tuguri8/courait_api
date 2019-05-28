@@ -709,6 +709,7 @@ async function getExcel(req, res) {
       ws.column(1).setWidth(15);
       ws.column(2).setWidth(50);
       ws.column(3).setWidth(15);
+      ws.column(4).setWidth(19);
       ws.column(5).setWidth(19);
       ws.column(7).setWidth(15);
       ws.column(8).setWidth(15);
@@ -742,7 +743,7 @@ async function getExcel(req, res) {
       ws.cell(12, 8).formula('SUM(C3:C999)').style(currencyStyle);
       list.forEach((data, idx) => {
         ws.cell(idx + 3, 1).string(data.date).style(basicStyle);
-        ws.cell(idx + 3, 2).string(data.name).style(basicStyle);
+        ws.cell(idx + 3, 2).string(data.item_name).style(basicStyle);
         ws.cell(idx + 3, 3).number(data.price).style(currencyStyle);
         ws.cell(idx + 3, 4).string(data.category).style(basicStyle);
         ws.cell(idx + 3, 5).string(data.food_category).style(basicStyle);
