@@ -750,30 +750,33 @@ async function getExcel(req, res) {
         ws.cell(idx + 3, 5).string(data.food_category).style(basicStyle);
       });
 
-      wb1.writeToBuffer().then((buffer) => {
-        const s3params = {
-          Body: buffer,
-          Bucket: 'courait',
-          Key: `${email.split('@')[0]}${moment().format('x')}.xlsx`,
-          ACL: 'public-read',
-        };
-
-        s3.upload(s3params, (err, data) => {
-          if (err) {
-            console.log(err.message);
-            return res.status(500).json({ success: false, message: '서버에러' });
-          }
-          console.log(data.Location);
-          models.Excel.create({
-            email,
-            url: data.Location,
-            date: moment().format('YYYY-MM-DD'),
-          }).then(() => res.status(200).json({ success: true, url: data.Location })).catch((inputErr) => {
-            console.log(inputErr);
-            return res.status(500).json({ success: false, message: '서버에러' });
+      function s3Upload(s3params) {
+        return new Promise(((resolve, reject) => {
+          s3.upload(s3params, (err, data) => {
+            if (err) {
+              reject(err.message);
+            }
+            console.log(data.Location);
+            models.Excel.create({
+              email,
+              url: data.Location,
+              date: moment().format('YYYY-MM-DD'),
+            }).then(() => resolve(data.Location)).catch((inputErr) => {
+              reject(inputErr);
+            });
           });
-        });
-      });
+        }));
+      }
+
+      const buffer = await wb1.writeToBuffer();
+      const s3params = {
+        Body: buffer,
+        Bucket: 'courait',
+        Key: `${email.split('@')[0]}${moment().format('x')}.xlsx`,
+        ACL: 'public-read',
+      };
+      const url = await s3Upload(s3params);
+      res.status(200).json({ success: true, url });
     } else {
       return res.status(501).json({ success: false, message: '결과없음' });
     }
@@ -966,31 +969,6 @@ async function getExcelMobile(req, res) {
       const url = await s3Upload(s3params);
       await mailer(email, `${userName} 님의 ${month}월 지출내역 엑셀 파일 입니다`, url);
       res.status(200).json({ success: true });
-
-      // wb1.writeToBuffer().then((buffer) => {
-      //   const s3params = {
-      //     Body: buffer,
-      //     Bucket: 'courait',
-      //     Key: `${email.split('@')[0]}${moment().format('x')}.xlsx`,
-      //     ACL: 'public-read',
-      //   };
-      //
-      //   s3.upload(s3params, (err, data) => {
-      //     if (err) {
-      //       console.log(err.message);
-      //       return res.status(500).json({ success: false, message: '서버에러' });
-      //     }
-      //     console.log(data.Location);
-      //     models.Excel.create({
-      //       email,
-      //       url: data.Location,
-      //       date: moment().format('YYYY-MM-DD'),
-      //     }).then(() => res.status(200).json({ success: true, url: data.Location })).catch((inputErr) => {
-      //       console.log(inputErr);
-      //       return res.status(500).json({ success: false, message: '서버에러' });
-      //     });
-      //   });
-      // });
     } else {
       return res.status(501).json({ success: false, message: '결과없음' });
     }
