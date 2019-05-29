@@ -98,7 +98,7 @@ async function getUserHistory(req, res) {
         required: true,
       }],
     });
-    if (list.purchase_lists) {
+    if (list) {
       res.status(200).json({
         success: true,
         purchase_list: list.purchase_lists,
