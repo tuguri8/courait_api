@@ -104,9 +104,9 @@ async function getUserHistory(req, res) {
         purchase_list: list.purchase_lists,
       });
     } else {
-      res.status(500).json({
+      res.status(501).json({
         success: false,
-        message: 'no purchase_lists',
+        message: '구매내역이 없습니다',
       });
     }
   } catch (e) {
