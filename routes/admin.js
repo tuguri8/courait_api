@@ -10,6 +10,7 @@ router.use(authMiddleware);
 router.get('/user/info', controller.admin.getUserInfo);
 router.get('/feedback', controller.admin.getFeedback);
 router.get('/history', controller.admin.getUserHistory);
+router.get('/alarm', controller.admin.getUserAlarm);
 router.post('/new', controller.admin.newAdmin);
 router.post('/mail', controller.admin.sendMail);
 router.delete('/user/info', controller.admin.deleteUserInfo);

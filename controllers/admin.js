@@ -246,6 +246,39 @@ async function getCrawlerStatus(req, res) {
   }
 }
 
+async function getUserAlarm(req, res) {
+  const { phone } = req.query;
+  try {
+    const userInfo = await models.User.findOne({
+      where: {
+        phone,
+      },
+    });
+    const alarm = await models.Alarm.findAll({
+      where: {
+        email: userInfo.email,
+      },
+    });
+    if (alarm) {
+      res.status(200).json({
+        success: true,
+        alarm_list: alarm,
+      });
+    } else {
+      res.status(501).json({
+        success: false,
+        message: '구매알림 내역이 없습니다',
+      });
+    }
+  } catch (e) {
+    console.log(e);
+    res.status(500).json({
+      success: false,
+      message: 'Server Error',
+    });
+  }
+}
+
 module.exports = {
   login,
   getUserInfo,
@@ -258,4 +291,5 @@ module.exports = {
   updateCrawlerStatus,
   updateCrawlerDay,
   getCrawlerStatus,
+  getUserAlarm,
 };
