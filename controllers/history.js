@@ -10,6 +10,7 @@ const cheerio = require('cheerio');
 const _ = require('underscore');
 const xl = require('excel4node');
 const AWS = require('aws-sdk');
+const Hangul = require('hangul-js');
 const models = require('../models');
 const mailer = require('../middleware/mail');
 
@@ -1009,6 +1010,58 @@ async function getExcelMobile(req, res) {
   }
 }
 
+async function getPurchaseHistory(req, res) {
+  const { email } = req.decoded;
+  try {
+    const result = await models.sequelize.query(`SELECT p.item_name, p.purchase_date FROM purchase_list AS p WHERE email='${email}' GROUP BY item_name ORDER BY purchase_date DESC LIMIT 5;`);
+    if (result) {
+      const purchaseHistoryArr = result[0].reduce((acc, cur) => {
+        acc.push({
+          'item_name': cur.item_name,
+          'purchase_date': cur.purchase_date,
+        });
+        return acc;
+      }, []);
+      return res.status(200).json(purchaseHistoryArr);
+    } else {
+      return res.status(200).json([]);
+    }
+  } catch (e) {
+    return res.status(500).json({ success: false, message: 'Server Error' });
+  }
+}
+
+async function searchPurchaseHistory(req, res) {
+  const { email } = req.decoded;
+  const { term } = req.query;
+  try {
+    const result = await models.Purchase_list.findAll({
+      where: {
+        email,
+      },
+      attributes: ['item_name'],
+      group: 'item_name',
+    });
+    if (result) {
+      const subway_array = result.reduce((acc, cur) => {
+        acc.push(cur.item_name);
+        return acc;
+      }, []);
+      const result_array = subway_array.reduce((acc, cur) => {
+        if (Hangul.search(cur, term, true) === 0) acc.push(cur);
+        return acc;
+      }, []);
+
+      return res.status(200).json(result_array);
+      // return '됨';
+    } else {
+      return res.status(403).json({ success: false, message: '결과없음' });
+    }
+  } catch (e) {
+    return res.status(500).json({ success: false, message: 'Server Error' });
+  }
+}
+
 module.exports = {
   getByMonth,
   getByDay,
@@ -1019,4 +1072,6 @@ module.exports = {
   inputPurchase,
   getExcel,
   getExcelMobile,
+  getPurchaseHistory,
+  searchPurchaseHistory,
 };

@@ -17,6 +17,7 @@
     "ejs": "~2.5.7",
     "excel4node": "^1.7.2",
     "express": "~4.16.0",
+    "hangul-js": "git+https://github.com/g1s/Hangul.js.git",
     "http-errors": "~1.6.2",
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.24.0",
