@@ -1013,7 +1013,7 @@ async function getExcelMobile(req, res) {
 async function getPurchaseHistory(req, res) {
   const { email } = req.decoded;
   try {
-    const result = await models.sequelize.query(`SELECT p.item_name, p.purchase_date FROM purchase_list AS p WHERE email='${email}' GROUP BY item_name ORDER BY purchase_date DESC LIMIT 5;`);
+    const result = await models.sequelize.query(`SELECT p.item_name, MAX(p.purchase_date) as datet FROM purchase_list AS p WHERE email='${email}' GROUP BY item_name ORDER BY datet DESC LIMIT 5;`);
     if (result) {
       const purchaseHistoryArr = result[0].reduce((acc, cur) => {
         acc.push({
