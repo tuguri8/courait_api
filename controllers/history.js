@@ -1043,12 +1043,12 @@ async function searchPurchaseHistory(req, res) {
       group: 'item_name',
     });
     if (result) {
-      const subway_array = result.reduce((acc, cur) => {
+      const item_array = result.reduce((acc, cur) => {
         acc.push(cur.item_name);
         return acc;
       }, []);
-      const result_array = subway_array.reduce((acc, cur) => {
-        if (Hangul.search(cur, term, true) === 0) acc.push(cur);
+      const result_array = item_array.reduce((acc, cur) => {
+        if (Hangul.search(cur, term, true) >= 0) acc.push(cur);
         return acc;
       }, []);
 
