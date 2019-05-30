@@ -1018,7 +1018,7 @@ async function getPurchaseHistory(req, res) {
       const purchaseHistoryArr = result[0].reduce((acc, cur) => {
         acc.push({
           'item_name': cur.item_name,
-          'purchase_date': cur.purchase_date,
+          'purchase_date': cur.datet,
         });
         return acc;
       }, []);
