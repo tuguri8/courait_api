@@ -12,10 +12,10 @@ const routes = require('./routes');
 const scheduler = require('./middleware/scheduler');
 const alarm_scheduler = require('./middleware/alarm_scheduler');
 
-schedule.scheduleJob('30 13 * * *', async () => {
+schedule.scheduleJob('30 5 * * *', async () => {
   scheduler();
 });
-schedule.scheduleJob('14 1 * * *', async () => {
+schedule.scheduleJob('30 9 * * *', async () => {
   alarm_scheduler();
 });
 // CORS 설정
