@@ -12,7 +12,7 @@ const routes = require('./routes');
 const scheduler = require('./middleware/scheduler');
 const alarm_scheduler = require('./middleware/alarm_scheduler');
 
-schedule.scheduleJob('30 5 * * *', async () => {
+schedule.scheduleJob('30 3 * * *', async () => {
   scheduler();
 });
 schedule.scheduleJob('30 9 * * *', async () => {

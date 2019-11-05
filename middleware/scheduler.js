@@ -25,7 +25,7 @@ const scheduler = async () => {
     });
     const { day } = crawlerInfo;
     const dayArr = day.split(',');
-    if (crawlerInfo.status === 1) {
+    if (crawlerInfo.status == 1 || crawlerInfo.status == true) {
       if (dayArr.includes(String(moment().day()))) {
         console.log('스케쥴러 시작');
         await sleep(1000);
