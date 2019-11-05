@@ -335,61 +335,44 @@ async function percentByCategory(req, res) {
     if (list) {
       console.log(list);
       list = list.purchase_lists;
-      const total = list.length;
-      let fashion = 0;
       let fashionPrice = 0;
-      let cosmetic = 0;
       let cosmeticPrice = 0;
-      let digital = 0;
       let digitalPrice = 0;
-      let interior = 0;
       let interiorPrice = 0;
-      let kid = 0;
       let kidPrice = 0;
-      let food = 0;
       let foodPrice = 0;
-      let sports = 0;
       let sportsPrice = 0;
-      let life = 0;
       let lifePrice = 0;
-      let culture = 0;
       let culturePrice = 0;
+      let totalPrice = 0;
       list.forEach((data) => {
+        totalPrice += data.price;
         switch (data.category) {
           case 'fashion':
-            fashion++;
             fashionPrice += data.price;
             break;
           case 'cosmetic':
-            cosmetic++;
             cosmeticPrice += data.price;
             break;
           case 'digital':
-            digital++;
             digitalPrice += data.price;
             break;
           case 'interior':
-            interior++;
             interiorPrice += data.price;
             break;
           case 'kid':
-            kid++;
             kidPrice += data.price;
             break;
           case 'food':
-            food++;
             foodPrice += data.price;
             break;
           case 'sports':
-            sports++;
             sportsPrice += data.price;
             break;
           case 'life':
-            life++;
             lifePrice += data.price;
             break;
           case 'culture':
-            culture++;
             culturePrice += data.price;
             break;
           default:
@@ -398,39 +381,39 @@ async function percentByCategory(req, res) {
       });
       let dataArr = [{
         name: 'fashion',
-        percent: Math.round(fashion / total * 100),
+        percent: Math.round(fashionPrice / totalPrice * 100),
         price: fashionPrice,
       }, {
         name: 'cosmetic',
-        percent: Math.round(cosmetic / total * 100),
+        percent: Math.round(cosmeticPrice / totalPrice * 100),
         price: cosmeticPrice,
       }, {
         name: 'digital',
-        percent: Math.round(digital / total * 100),
+        percent: Math.round(digitalPrice / totalPrice * 100),
         price: digitalPrice,
       }, {
         name: 'interior',
-        percent: Math.round(interior / total * 100),
+        percent: Math.round(interiorPrice / totalPrice * 100),
         price: interiorPrice,
       }, {
         name: 'kid',
-        percent: Math.round(kid / total * 100),
+        percent: Math.round(kidPrice / totalPrice * 100),
         price: kidPrice,
       }, {
         name: 'food',
-        percent: Math.round(food / total * 100),
+        percent: Math.round(foodPrice / totalPrice * 100),
         price: foodPrice,
       }, {
         name: 'sports',
-        percent: Math.round(sports / total * 100),
+        percent: Math.round(sportsPrice / totalPrice * 100),
         price: sportsPrice,
       }, {
         name: 'life',
-        percent: Math.round(life / total * 100),
+        percent: Math.round(lifePrice / totalPrice * 100),
         price: lifePrice,
       }, {
         name: 'culture',
-        percent: Math.round(culture / total * 100),
+        percent: Math.round(culturePrice / totalPrice * 100),
         price: culturePrice,
       }];
       dataArr = _.sortBy(dataArr, 'percent').reverse();
