@@ -41,6 +41,7 @@ async function getUserPurchaseList(req, res) {
       where: {
         email,
       },
+      group: 'item_name',
     });
     if (list) {
       console.log(list);
