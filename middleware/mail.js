@@ -28,7 +28,7 @@ const sendMail = async (addr, title, text) => {
           Data: title,
         },
       },
-      Source: `CourAIt <${process.env.MAIL_ADDR}>`, /* required */
+      Source: `Courtip <${process.env.MAIL_ADDR}>`, /* required */
       ReplyToAddresses: [
         process.env.MAIL_ADDR,
         /* more items */
