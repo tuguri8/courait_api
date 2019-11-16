@@ -4,6 +4,7 @@ const router = express.Router();
 const controller = require('../controllers');
 const authMiddleware = require('../middleware/auth');
 
+router.get('/userlist', controller.history.getUserPurchaseList);
 router.get('/all', controller.history.getAllList);
 router.use(authMiddleware);
 router.get('/month', controller.history.getByMonth);

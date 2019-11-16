@@ -34,6 +34,28 @@ async function getAllList(req, res) {
   }
 }
 
+async function getUserPurchaseList(req, res) {
+  try {
+    const { email } = req.query;
+    const list = await models.Purchase_list.findAll({
+      where: {
+        email,
+      },
+    });
+    if (list) {
+      console.log(list);
+      // list = list.purchase_lists;
+      return res.status(200).json({
+        success: true, category_list: list
+      });
+    }
+    return res.status(501).json({ success: false, message: '결과없음' });
+  } catch (e) {
+    console.log(e);
+    return res.status(500).json({ success: false, message: 'Server Error' });
+  }
+}
+
 function getCategory(category) {
   switch (category) {
     case 'fashion':
@@ -1076,4 +1098,5 @@ module.exports = {
   getPurchaseHistory,
   searchPurchaseHistory,
   getAllList,
+  getUserPurchaseList,
 };
