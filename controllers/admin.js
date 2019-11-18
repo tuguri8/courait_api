@@ -169,7 +169,7 @@ async function sendMail(req, res) {
   const { email } = req.body;
   const { content } = req.body;
   try {
-    await mailer(email, '안녕하세요 쿠레이트 입니다.', content);
+    await mailer(email, '안녕하세요 Courtip 입니다.', content);
     res.status(200).json({ success: true, message: '메일이 성공적으로 전송되었습니다.' });
   } catch (e) {
     console.log(e);
